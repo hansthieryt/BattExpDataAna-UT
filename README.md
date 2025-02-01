@@ -115,15 +115,15 @@ Performs correlation analysis to identify significant relationships between diff
 	•	ML02_Function_SOH_Prediction.py:
 Utilizes machine learning algorithms to predict the State of Health based on historical data and identified features.
 
-#User Manual 
+# User Manual 
 
 For detailed instructions on how to use each function and script, please refer to the User Manual.md file included in this repository.
 
-#License
+# License
 
 This project is licensed under the MIT License. See the LICENSE file for details.
 
-#Acknowledgments
+# Acknowledgments
 
 This research is conducted at the University of Twente, contributing to advancements in battery circularity and sustainability.
 
