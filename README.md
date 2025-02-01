@@ -29,13 +29,13 @@ The input parameters of data should include:
 - dQ/dV(mAh/V)
 
 
-Battery Circularity Research - University of Twente
+##Battery Circularity Research - University of Twente
 
 Overview
 
 This repository contains data processing and analysis tools developed for battery circularity research at the University of Twente. The tools are designed to process experimental data, perform various analyses, and support machine learning applications related to battery performance and health assessment.
 
-Repository Structure
+#Repository Structure
 	•	DA_Data: This folder contains datasets, likely experimental data, used for analysis.
 	•	DA_Function: This folder contains Python scripts for various processing and analysis functions:
 	•	DA00_Function_Import_Main_df.py: Imports and prepares the main dataframes for analysis.
@@ -50,7 +50,7 @@ Repository Structure
 	•	DA_Main.py: The main script that orchestrates the data processing and analysis workflow by utilizing functions from the DA_Function folder.
 	•	User Manual.md: A manual providing detailed instructions on how to use the scripts and tools in this repository.
 
-Getting Started
+#Getting Started
 	1.	Clone the Repository:
 
 git clone https://github.com/hansthieryt/Battery-Circularity-Research-University-of-Twente.git
@@ -72,7 +72,7 @@ python DA_Main.py
 
 This script will call the necessary functions from the DA_Function folder to process the data and generate results.
 
-Function Descriptions
+#Function Descriptions
 	•	DA00_Function_Import_Main_df.py:
 Imports raw data files, cleans, and structures them into main dataframes for subsequent analysis.
 	•	DA01_Function_VnIvsTime.py:
@@ -92,15 +92,15 @@ Performs correlation analysis to identify significant relationships between diff
 	•	ML02_Function_SOH_Prediction.py:
 Utilizes machine learning algorithms to predict the State of Health based on historical data and identified features.
 
-User Manual
+#User Manual 
 
 For detailed instructions on how to use each function and script, please refer to the User Manual.md file included in this repository.
 
-License
+#License
 
 This project is licensed under the MIT License. See the LICENSE file for details.
 
-Acknowledgments
+#Acknowledgments
 
 This research is conducted at the University of Twente, contributing to advancements in battery circularity and sustainability.
 
