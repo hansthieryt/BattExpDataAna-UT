@@ -95,7 +95,7 @@ python DA_Main.py
 
 This script will call the necessary functions from the DA_Function folder to process the data and generate results.
 
-#Function Descriptions
+## Function Descriptions
 	•	DA00_Function_Import_Main_df.py:
 Imports raw data files, cleans, and structures them into main dataframes for subsequent analysis.
 	•	DA01_Function_VnIvsTime.py:
