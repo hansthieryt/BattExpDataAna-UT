@@ -28,6 +28,29 @@ The input parameters of data should include:
 - Realtime	
 - dQ/dV(mAh/V)
 
+  
+# Battery Circularity Research - University of Twente
+
+## Overview
+
+This repository contains Python functions for processing and analyzing battery data. Below is a description of each function, including its purpose and how to use it.
+
+---
+
+## 1. `DA00_Function_Import_Main_df.py`
+
+### Description
+This function imports raw battery data, cleans it, and prepares it for analysis by converting it into structured dataframes.
+
+### How It Works
+- Reads raw data files from the `DA_Data` folder.
+- Cleans missing values and formats the data.
+- Returns structured dataframes for further processing.
+
+### Usage
+```python
+from DA_Function.DA00_Function_Import_Main_df import import_main_df
+df = import_main_df("datafile.csv")
 
 ##Battery Circularity Research - University of Twente
 
