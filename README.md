@@ -1,4 +1,4 @@
-# Battery Circularity Research - University of Twente
+# Battery Experiment Data Analysis - University of Twente (BattExpDataAna)
 
 ## Overview
 
