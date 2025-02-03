@@ -42,7 +42,7 @@ This package is designed to process multiple TXT files labeled in sequence as in
 - dQ/dV(mAh/V)
 
 
-## Functions
+## Functions Brief
 ---
 ### Data Pre-processing (Import)
 
