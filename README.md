@@ -9,17 +9,27 @@ This repository contains Python functions for processing and analyzing battery e
 ---
 
 ## Getting Started
+### 1. Clone the Repository:
+```bash
+git clone https://github.com/hansthieryt/Battery-Circularity-Research-University-of-Twente.git
+cd Battery-Circularity-Research-University-of-Twente
+```
 
-### Install Dependencies
+### 2. Install Dependencies
+Ensure you have Python installed. Install the required Python packages using:
 ```bash
 pip install -r requirements.txt
 ```
 
-### Running the Scripts
-To run the main analysis script:
+### 3. Prepare Data
+Place your experimental data files in the DA_Data folder. Ensure they are in the correct format as expected by the scripts.
+
+### 4. Running the Main Script
+Execute the main script to start the data processing and analysis workflow:
 ```bash
 python DA_Main.py
 ```
+
 
 ## Data Requirements
 ---
