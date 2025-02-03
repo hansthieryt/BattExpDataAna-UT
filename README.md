@@ -160,5 +160,3 @@ plot_dqdv(df)
 This project is licensed under the MIT License.
 
 ---
-
-This `README.md` provides descriptions and usage examples for each function. Let me know if you need any modifications!
