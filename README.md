@@ -1,5 +1,4 @@
 # Battery Experiment Data Analysis - University of Twente (BattExpDataAna-UT)
-
 This repository contains Python functions for processing and analyzing battery experiment data. 
 
 ## Software Dependencies
@@ -30,7 +29,6 @@ python DA_Main.py
 
 
 ## Data Requirements
----
 This package is designed to process multiple TXT files labeled in sequence as input and relies on specific column headers. Refer to the 'DA_Data' directory for example dataset files. The column header for each dataset file should include and appear exactly as follows:
 - Cycle ID
 - Step ID
