@@ -11,8 +11,8 @@ This repository contains Python functions for processing and analyzing battery e
 ## Getting Started
 ### 1. Clone the Repository:
 ```bash
-git clone https://github.com/hansthieryt/Battery-Circularity-Research-University-of-Twente.git
-cd Battery-Circularity-Research-University-of-Twente
+git clone https://github.com/hansthieryt/BattExpDataAna-UT.git
+cd BattExpDataAna-UT
 ```
 
 ### 2. Install Dependencies
