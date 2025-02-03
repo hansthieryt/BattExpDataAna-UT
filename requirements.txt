@@ -1,1 +1,10 @@
-
+os
+re
+functools
+lmfit
+matplotlib
+numpy
+pandas
+scipy
+seaborn
+scikit-learn
