@@ -1,4 +1,4 @@
-# Battery Experiment Data Analysis - University of Twente (BattExpDataAna)
+# Battery Experiment Data Analysis - University of Twente (BattExpDataAna-UT)
 
 This repository contains Python functions for processing and analyzing battery experiment data. 
 
