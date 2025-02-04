@@ -43,7 +43,6 @@ This package is designed to process multiple TXT files labeled in sequence as in
 
 
 ## Functions Brief
----
 ### Data Pre-processing (Import)
 
 #### 1. `DA00_Function_Import_Main_df.py`
@@ -61,7 +60,6 @@ df = import_main_df("datafile.csv")
 ```
 
 ### Direct Plotting
----
 
 #### 2. `DA01_Function_VnIvsTime.py`
 This function analyzes and visualizes voltage and current variations over time during battery cycling.
@@ -77,8 +75,6 @@ from DA_Function.DA01_Function_VnIvsTime import plot_v_i_vs_time
 plot_v_i_vs_time(df)
 ```
 
----
-
 #### 3. `DA02_Function_VvsCap.py`
 This function generates voltage vs. capacity plots to evaluate battery performance.
 
@@ -93,7 +89,6 @@ plot_v_vs_cap(df)
 ```
 
 ### Data Processing & Plotting
----
 
 #### 4. `DA03_Function_Coulombic_Efficiency.py`
 This function calculates Coulombic efficiency, a key indicator of battery charge efficiency.
@@ -112,8 +107,6 @@ ce = calculate_ce(df)
 print(f"Coulombic Efficiency: {ce}%")
 ```
 
----
-
 #### 5. `DA04_Function_SOH.py`
 This function calculates the State of Health (SOH) of the battery.
 
@@ -127,8 +120,6 @@ from DA_Function.DA04_Function_SOH import calculate_soh
 soh = calculate_soh(df, initial_capacity=100)
 print(f"State of Health: {soh}%")
 ```
-
----
 
 #### 6. `DA05_Function_Statistical_Model.py`
 Applies statistical models to analyze battery performance data.
@@ -145,8 +136,6 @@ print(model_results)
 ```
 
 ### Data Processing & Analysis
----
-
 #### 7. `DA06_Function_dQdV.py`
 This function calculates and visualizes the differential capacity (dQ/dV) curves.
 
@@ -159,10 +148,3 @@ Usage
 from DA_Function.DA06_Function_dQdV import plot_dqdv
 plot_dqdv(df)
 ```
-
----
-
-## License
-This project is licensed under the MIT License.
-
----
