@@ -1,6 +1,7 @@
 # `DA00_Function_Import_Main_df.py`
 
 This function is part of the Data Pre-processing (Import) Module in the Battery Experiment Data Analysis - University of Twente (BattExpDataAna-UT), which responsible for the initial importing task of raw battery experiment data and the pre-processing tasks, such as filtering, sorting, grouping, and renaming. Overall, preparing it for analysis by converting it into structured dataframes.
+
 ---
 ## DA00_Function_Import
 ### Function Overview
