@@ -1,6 +1,6 @@
 # `DA04_Function_SOH.py`
 
-This function is part of the **Direct Plotting Module** in the **Battery Experiment Data Analysis - University of Twente (BattExpDataAna-UT)** repository. It is responsible for calculating and plotting **State of Health (SOH)** over battery cycles, providing insights into the health of the battery during its usage.
+This function is part of the **Data Processing & Plotting Module** in the **Battery Experiment Data Analysis - University of Twente (BattExpDataAna-UT)** repository. It is responsible for calculating and plotting **State of Health (SOH)** over battery cycles, providing insights into the health of the battery during its usage.
 
 ---
 
