@@ -5,7 +5,7 @@ This function is part of the **Direct Plotting Module** in the **Battery Experim
 ---
 
 ## **Function: DA02_Function_VvsCap**
-### **Function Overview**
+### **Overview**
 This function generates **Voltage vs. Capacity (V-Q) plots** for all battery cycles recorded in `df_VQ_grouped`.
 
 ### **Inputs**
