@@ -57,6 +57,6 @@ A sample plot file will be saved as:
 ## **Notes**
 - This function helps analyze battery capacity degradation over multiple cycles.
 - Ensure `df_VQ_grouped` contains correctly labeled cycle data before running the function.
-- If Cycle 5 data is missing, the second plot will not be generated.
+- If certain cycle data is missing, that cycle plot will not be generated.
 
 ---
