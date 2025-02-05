@@ -1,173 +1,131 @@
-# `DA06_Function_dQdV.py`
+# DA06_Function_dQdV
 
-This function is part of the Data Pre-processing (Import) of Battery Experiment Data Analysis - University of Twente (BattExpDataAna-UT), which responsible for the initial import of raw battery experiment data and the pre-processing phase, such as filtering, sorting, grouping, naming, and preparing it for analysis by converting it into structured dataframes.
+## Description
 
----
-## DA06_Function_dQdV
-### Input
-- data_folder
-- file_name
-- rated_capacity 
+This Python function `DA06_Function_dQdV` processes battery cycling data to calculate, analyze, and visualize differential capacity (dQ/dV) versus voltage for charge and discharge cycles. The function provides functionalities for data interpolation, smoothing, peak detection, Gaussian fitting, and data visualization.
 
-### How It Works
-- Reads raw data files from the `DA_Data` folder.
-- Cleans missing values and formats the data.
-- Returns structured dataframes for further processing.
+## Requirements
 
-### Output
-- dataframes for further processing & analysis: df_main
+- Python 3.x
+- Libraries:
+  - pandas
+  - numpy
+  - matplotlib
+  - scipy
+  - lmfit
 
-### Usage
-```python
-from DA_Function.DA00_Function_Import_Main_df import import_main_df
-df = import_main_df("datafile.csv")
-```
+Install the required libraries using:
 
----
-## DA00_Function_df_Cycle_Grouping
-### Input
-- df_main
-- result_folder
-- file_name
-
-### How It Works
-- Reads raw data files from the `DA_Data` folder.
-- Cleans missing values and formats the data.
-- Returns structured dataframes for further processing.
-
-### Output
-- dataframes for further processing & analysis: df_cycle_grouped; df_VQ_grouped
-
-### Usage
-```python
-from DA_Function.DA00_Function_Import_Main_df import import_main_df
-df = import_main_df("datafile.csv")
-```
-
-
-
-
-### Running the Scripts
-To run the main analysis script:
 ```bash
-python DA_Main.py
+pip install pandas numpy matplotlib scipy lmfit
 ```
 
-## Functions
----
-### Data Pre-processing (Import)
+## Function Signature
 
-#### 1. `DA00_Function_Import_Main_df.py`
-This function imports raw battery data, cleans it, and prepares it for analysis by converting it into structured dataframes.
-
-How It Works
-- Reads raw data files from the `DA_Data` folder.
-- Cleans missing values and formats the data.
-- Returns structured dataframes for further processing.
-
-Usage
 ```python
-from DA_Function.DA00_Function_Import_Main_df import import_main_df
-df = import_main_df("datafile.csv")
+def DA06_Function_dQdV(file_name, df_cycle_grouped, df_VQ_grouped, show_on_plot, interpolation_points, 
+                       window_length, polyorder, window_size, min_prominence, min_height, 
+                       max_prominence, max_height, prominence_step, height_step, 
+                       max_iterations, max_peaks, result_folder):
 ```
 
-### Direct Plotting
----
+### Parameters
 
-#### 2. `DA01_Function_VnIvsTime.py`
-This function analyzes and visualizes voltage and current variations over time during battery cycling.
+- `file_name`: Name of the input file (string).
+- `df_cycle_grouped`: DataFrame containing battery cycling data, grouped by cycle.
+- `df_VQ_grouped`: DataFrame containing voltage and capacity data for cycles.
+- `show_on_plot`: A list of strings indicating which data types to plot (e.g., `'data'`, `'ori'`, `'int'`, `'smooth'`, `'peaks-fitting'`).
+- `interpolation_points`: Number of points to interpolate data to.
+- `window_length`: Window length for Savitzky-Golay smoothing.
+- `polyorder`: Polynomial order for Savitzky-Golay smoothing.
+- `window_size`: Window size for Gaussian fitting around peaks.
+- `min_prominence`: Minimum prominence for peak detection.
+- `min_height`: Minimum height for peak detection.
+- `max_prominence`: Maximum prominence for peak detection.
+- `max_height`: Maximum height for peak detection.
+- `prominence_step`: Step to adjust prominence if too many peaks are detected.
+- `height_step`: Step to adjust height if too many peaks are detected.
+- `max_iterations`: Maximum number of iterations to adjust prominence and height.
+- `max_peaks`: Maximum number of peaks to detect per cycle.
+- `result_folder`: Directory where results will be saved.
 
-How It Works
-- Reads the processed dataframe.
-- Plots voltage and current against time.
-- Helps analyze battery performance over charge-discharge cycles.
+## Function Flow
 
-Usage
+### 1. dQ/dV Calculation
+
+- **Interpolation**: Reduces data points for smoother analysis.
+- **Smoothing**: Uses the Savitzky-Golay filter to smooth the dQ/dV data.
+- **Calculation of dQ/dV**: The derivative of capacity with respect to voltage for both charge and discharge cycles.
+
+### 2. Plotting
+
+- **dQ/dV vs Voltage**: The function generates a plot of differential capacity against voltage, with options to display different versions (original, interpolated, smoothed).
+- **Peak Detection and Fitting**: If `show_on_plot` includes `'peaks-fitting'`, the function will detect peaks and fit Gaussian curves to each peak, providing insights into the characteristics of the battery cycles.
+
+### 3. Peak Detection
+
+- **Peak Finding**: Detects peaks in the charge and discharge cycles using `find_peaks` from the `scipy` library.
+- **Adjustable Parameters**: The function iteratively adjusts the prominence and height thresholds to find the optimal peaks based on `max_peaks`, `min_prominence`, `min_height`, `prominence_step`, and `height_step`.
+
+### 4. Gaussian Fitting
+
+- **Gaussian Fit**: A Gaussian model is fitted to the detected peaks to estimate their amplitude, mean, and standard deviation.
+- **Overvoltage Calculation**: The overvoltage is calculated as the difference between the peak voltage of charge and discharge cycles.
+
+### 5. Data Export
+
+- **CSV Export**: The processed data (including dQ/dV and peaks) is saved to a CSV file in the specified `result_folder`.
+
+### 6. Plotting All Cycles
+
+- A plot displaying all cycles with charge and discharge curves is saved in the `result_folder`.
+
+## Example Output
+
+The output consists of several files:
+1. **dQ/dV Plot for Each Cycle**: Each cycle's dQ/dV plot is saved as an image (`.png` file).
+2. **CSV File**: The `df_dQdV_{file_name}_filtered.csv` contains the dQ/dV data for all cycles.
+
+### Example Plot Output
+
+- A plot displaying the charge and discharge cycles' dQ/dV curves.
+- Example output filename: `dQdV_{file_name}_Cycle_{cycle_id}.png`.
+
+### Example CSV Output
+
+The resulting CSV contains columns such as:
+- `Cycle_1_VChg`, `Cycle_1_dQdVChg_Smooth`
+- `Cycle_2_VChg`, `Cycle_2_dQdVChg_Smooth`
+- And so on for each cycle.
+
+## Notes
+
+- The function assumes that the input data follows a specific naming convention for the columns related to each cycle.
+- The user must ensure that the input DataFrames (`df_cycle_grouped` and `df_VQ_grouped`) contain the necessary columns for each cycle.
+- The function provides flexibility in adjusting the peak detection and fitting parameters for different datasets.
+
+## Example Usage
+
 ```python
-from DA_Function.DA01_Function_VnIvsTime import plot_v_i_vs_time
-plot_v_i_vs_time(df)
+DA06_Function_dQdV(
+    file_name="battery_data", 
+    df_cycle_grouped=df_cycle_grouped, 
+    df_VQ_grouped=df_VQ_grouped, 
+    show_on_plot=["data", "smooth", "peaks-fitting"], 
+    interpolation_points=1000, 
+    window_length=11, 
+    polyorder=3, 
+    window_size=5, 
+    min_prominence=0.1, 
+    min_height=0.1, 
+    max_prominence=1.0, 
+    max_height=2.0, 
+    prominence_step=0.05, 
+    height_step=0.1, 
+    max_iterations=10, 
+    max_peaks=3, 
+    result_folder="results"
+)
 ```
 
----
-
-#### 3. `DA02_Function_VvsCap.py`
-This function generates voltage vs. capacity plots to evaluate battery performance.
-
-How It Works
-- Extracts voltage and capacity data from the dataframe.
-- Plots a curve to visualize capacity retention and efficiency.
-
-Usage
-```python
-from DA_Function.DA02_Function_VvsCap import plot_v_vs_cap
-plot_v_vs_cap(df)
-```
-
-### Data Processing & Plotting
----
-
-#### 4. `DA03_Function_Coulombic_Efficiency.py`
-This function calculates Coulombic efficiency, a key indicator of battery charge efficiency.
-
-How It Works
-- Computes Coulombic efficiency as:
-
-  \[ CE = \frac{\text{Discharge Capacity}}{\text{Charge Capacity}} \times 100\% \]
-
-- Returns efficiency percentage.
-
-Usage
-```python
-from DA_Function.DA03_Function_Coulombic_Efficiency import calculate_ce
-ce = calculate_ce(df)
-print(f"Coulombic Efficiency: {ce}%")
-```
-
----
-
-#### 5. `DA04_Function_SOH.py`
-This function calculates the State of Health (SOH) of the battery.
-
-How It Works
-- Compares current capacity to the original capacity.
-- Determines battery degradation over time.
-
-Usage
-```python
-from DA_Function.DA04_Function_SOH import calculate_soh
-soh = calculate_soh(df, initial_capacity=100)
-print(f"State of Health: {soh}%")
-```
-
----
-
-#### 6. `DA05_Function_Statistical_Model.py`
-Applies statistical models to analyze battery performance data.
-
-How It Works
-- Performs regression or statistical trend analysis.
-- Identifies patterns and predictions in battery performance.
-
-Usage
-```python
-from DA_Function.DA05_Function_Statistical_Model import apply_stat_model
-model_results = apply_stat_model(df)
-print(model_results)
-```
-
-### Data Processing & Analysis
----
-
-#### 7. `DA06_Function_dQdV.py`
-This function calculates and visualizes the differential capacity (dQ/dV) curves.
-
-How It Works
-- Computes differential capacity to study electrochemical properties.
-- Plots dQ/dV against voltage.
-
-Usage
-```python
-from DA_Function.DA06_Function_dQdV import plot_dqdv
-plot_dqdv(df)
-```
-
+This function will process the battery data, generate dQ/dV plots, detect peaks, and fit Gaussian models to the peaks, saving the results in the specified `result_folder`.
