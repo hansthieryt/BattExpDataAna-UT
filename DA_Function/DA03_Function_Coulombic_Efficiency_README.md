@@ -64,4 +64,3 @@ A sample plot file will be saved as:
 - Missing data for any cycle will result in no plot for that cycle.
 
 ---
-```
