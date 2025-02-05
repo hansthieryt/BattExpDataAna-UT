@@ -43,7 +43,7 @@ This plot helps visualize charge and discharge cycles.
 
 ---
 
-## **2. DA01_Function_Power**
+## **Function: DA01_Function_Power**
 ### **Function Overview**
 This function calculates and analyzes power behavior during battery cycling tests.
 
