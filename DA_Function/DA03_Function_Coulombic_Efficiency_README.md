@@ -1,6 +1,6 @@
 # `DA03_Function_Coulombic_Efficiency.py`
 
-This function is part of the **Direct Plotting Module** in the **Battery Experiment Data Analysis - University of Twente (BattExpDataAna-UT)** repository. It is responsible for calculating and plotting **Coulombic Efficiency (CE)** along with charge and discharge capacities over multiple battery cycles.
+This function is part of the **Data Processing & Plotting Module** in the **Battery Experiment Data Analysis - University of Twente (BattExpDataAna-UT)** repository. It is responsible for calculating and plotting **Coulombic Efficiency (CE)** along with charge and discharge capacities over multiple battery cycles.
 
 ---
 
