@@ -1,6 +1,6 @@
 # `DA01_Function_VnIvsTime.py`
 
-This function is part of the **Direct Plotting Module** in the **Battery Experiment Data Analysis - University of Twente (BattExpDataAna-UT)** project. It is responsible for plotting **Voltage and Current vs. Time**, allowing visualization of battery behavior across multiple cycles.
+This function is part of the **Direct Plotting Module** in the **Battery Experiment Data Analysis - University of Twente (BattExpDataAna-UT)** repository. It is responsible for plotting **Voltage and Current vs. Time**, allowing visualization of battery behavior across multiple cycles.
 
 ---
 
