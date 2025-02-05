@@ -1,106 +1,145 @@
 # `DA01_Function_VnIvsTime.py`
 
-This function is part of the **Direct Plotting Module** in the **Battery Experiment Data Analysis - University of Twente (BattExpDataAna-UT)** project. It is responsible for importing raw battery experiment data and analyzing voltage and current behavior over time. The function processes the data and generates structured outputs for visualization and further analysis.
+This function is part of the **Direct Plotting Module** in the **Battery Experiment Data Analysis - University of Twente (BattExpDataAna-UT)** project. It is responsible for plotting **Voltage and Current vs. Time**, allowing visualization of battery behavior across multiple cycles.
 
 ---
 
-## **Function: DA01_Function_VnIvsTime**
+## **Function DA01_Function_VnIvsTime**
 ### **Overview**
-This function extracts voltage and current data over time from raw battery cycling experiments and visualizes trends.
+This function generates **Voltage and Current vs. Time plots** for each cycle in `df_cycle_grouped`, as well as a combined plot for all cycles.
 
 ### **Inputs**
-- `data_folder` (str): The folder containing the raw battery data files.
-- `file_name` (str): The name of the file to be imported.
-- `rated_capacity` (float): The nominal capacity of the battery cell (Ah), used for normalization.
+- `result_folder` (str): The folder where processed results and plots will be saved.
+- `file_name` (str): The name of the file used for output naming.
+- `df_cycle_grouped` (DataFrameGroupBy): Grouped dataframe containing voltage, current, and time data for different cycles.
 
 ### **Processing Steps**
-1. Reads raw data files from the specified `data_folder`.
-2. Cleans missing or inconsistent values and applies necessary formatting.
-3. Extracts voltage (`V`) and current (`I`) values over time.
-4. Generates a visualization of voltage and current against time.
+1. Iterates through all available cycles and extracts **Voltage and Current vs. Time** data.
+2. Uses **matplotlib** to generate **Voltage and Current vs. Time plots** for each cycle.
+3. Generates a **combined plot** displaying all cycles in different colors.
+4. Saves the plots as image files in `result_folder`.
 
 ### **Outputs**
-- A **plot of voltage and current vs. time**, useful for identifying battery charge/discharge behavior.
+- **Voltage and Current vs. Time plot** for each cycle, saved as `VnCvsTime_{file_name}_Cycle{i}.png`.
+- **Combined plot** for all cycles, saved as `VnCvsTime_{file_name}_AllCycles.png`.
 
 ### **Example Usage**
 ```python
-from DA_Functions.DA01_Function_VnIvsTime import plot_VnI_vs_time
-
-# Define input parameters
-data_folder = "DA_Data"
-file_name = "battery_test_data.csv"
-rated_capacity = 2.5  # in Ah
-
-# Generate voltage and current vs. time plot
-plot_VnI_vs_time(data_folder, file_name, rated_capacity)
-```
-
-### **Example Output**
-This function will generate a **plot** displaying:
-- **Voltage (V) vs. Time**
-- **Current (I) vs. Time**  
-This plot helps visualize charge and discharge cycles.
-
----
-
-## **Function: DA01_Function_Power**
-### **Function Overview**
-This function calculates and analyzes power behavior during battery cycling tests.
-
-### **Inputs**
-- `df_main` (DataFrame): The pre-processed dataframe obtained from `import_main_df`.
-- `result_folder` (str): The folder where processed results will be saved.
-- `file_name` (str): The name of the file used for naming output files.
-
-### **Processing Steps**
-1. Extracts voltage (`V`) and current (`I`) data from `df_main`.
-2. Computes **power** using the formula:  
-   \[
-   P = V \times I
-   \]
-3. Structures the power data for further analysis.
-4. Saves the processed power data in `result_folder`.
-
-### **Outputs**
-- `df_power` (DataFrame): A structured dataframe containing calculated power values over time.
-- A CSV file containing power calculations saved in `result_folder`.
-
-### **Example Usage**
-```python
-from DA_Functions.DA01_Function_Power import calculate_power
+from DA_Functions.DA01_Function_VnIvsTime import DA01_Function_VnIvsTime
 import pandas as pd
 
-# Load processed battery cycling data
-df_main = pd.read_csv("Processed_Results/df_main.csv")
+# Load processed battery cycle data
+df_cycle_grouped = pd.read_csv("Processed_Results/df_cycle_grouped.csv").groupby("Cycle")
 
 # Define output parameters
 result_folder = "Processed_Results"
-file_name = "battery_power_data"
+file_name = "battery_VnI_plot"
 
-# Compute power
-df_power = calculate_power(df_main, result_folder, file_name)
-
-# Display first few rows of the power dataframe
-print(df_power.head())
+# Generate Voltage and Current vs. Time plots
+DA01_Function_VnIvsTime(result_folder, file_name, df_cycle_grouped)
 ```
 
 ### **Example Output**
-The function will generate a dataframe (`df_power`) with the following structure:
+This function will generate:
+1. **Voltage and Current vs. Time Plot for Each Cycle**
+2. **Voltage and Current vs. Time Combined Plot for All Cycles**
 
-| Time (s) | Voltage (V) | Current (A) | Power (W) |
-|----------|------------|------------|------------|
-| 0        | 3.80       | 1.50       | 5.70       |
-| 1        | 3.82       | 1.48       | 5.65       |
-| 2        | 3.84       | 1.46       | 5.61       |
-| ...      | ...        | ...        | ...        |
+#### **Example Plot Structure:**
+- **X-axis:** Cycle Time (s)
+- **Left Y-axis:** Voltage (V)
+- **Right Y-axis:** Current (mA)
+- **Solid lines:** Voltage data
+- **Dashed lines:** Current data
 
-Additionally, a CSV file will be saved in `Processed_Results/battery_power_data.csv`.
+A sample plot file will be saved as:  
+📂 `Processed_Results/battery_VnI_plot/VnCvsTime_battery_VnI_plot_AllCycles.png`
+
+---
+
+## **Function: DA01_Function_VnIvsTime_Combined**
+### **Overview**
+This function generates a **Voltage and Current vs. Time plot** for a combined dataset containing multiple cycles.
+
+### **Inputs**
+- `combined_result_folder` (str): The folder where the plot will be saved.
+- `df_combined` (DataFrame): A dataframe containing cycle time, voltage, and current data for multiple cycles.
+
+### **Outputs**
+- A **combined Voltage and Current vs. Time plot**, saved as `VnCvsTime_Combined.png`.
+
+### **Example Usage**
+```python
+from DA_Functions.DA01_Function_VnIvsTime import DA01_Function_VnIvsTime_Combined
+import pandas as pd
+
+# Load combined battery cycle data
+df_combined = pd.read_csv("Processed_Results/df_combined.csv")
+
+# Define output parameters
+combined_result_folder = "Processed_Results"
+
+# Generate combined Voltage and Current vs. Time plot
+DA01_Function_VnIvsTime_Combined(combined_result_folder, df_combined)
+```
+
+### **Example Output**
+A sample plot file will be saved as:  
+📂 `Processed_Results/VnCvsTime_Combined.png`
+
+---
+
+## **3. DA01_Function_Power**
+### **Function Overview**
+This function generates **Power vs. Time plots** for each cycle and a combined plot for all cycles.
+
+### **Inputs**
+- `result_folder` (str): The folder where processed results and plots will be saved.
+- `file_name` (str): The name of the file used for output naming.
+- `df_cycle_grouped` (DataFrameGroupBy): Grouped dataframe containing cycle time, voltage, and current data for different cycles.
+
+### **Processing Steps**
+1. Iterates through all available cycles and calculates **Power (Voltage × Current)**.
+2. Uses **matplotlib** to generate **Power vs. Time plots** for each cycle.
+3. Generates a **combined plot** displaying all cycles in different colors.
+4. Saves the plots as image files in `result_folder`.
+
+### **Outputs**
+- **Power vs. Time plot** for each cycle, saved as `PvsTime_{file_name}_Cycle{i}.png`.
+- **Combined Power vs. Time plot**, saved as `PvsTime_{file_name}_AllCycles.png`.
+
+### **Example Usage**
+```python
+from DA_Functions.DA01_Function_VnIvsTime import DA01_Function_Power
+import pandas as pd
+
+# Load processed battery cycle data
+df_cycle_grouped = pd.read_csv("Processed_Results/df_cycle_grouped.csv").groupby("Cycle")
+
+# Define output parameters
+result_folder = "Processed_Results"
+file_name = "battery_power_plot"
+
+# Generate Power vs. Time plots
+DA01_Function_Power(result_folder, file_name, df_cycle_grouped)
+```
+
+### **Example Output**
+This function will generate:
+1. **Power vs. Time Plot for Each Cycle**
+2. **Power vs. Time Combined Plot for All Cycles**
+
+#### **Example Plot Structure:**
+- **X-axis:** Cycle Time (s)
+- **Y-axis:** Power (kW)
+
+A sample plot file will be saved as:  
+📂 `Processed_Results/battery_power_plot/PvsTime_battery_power_plot_AllCycles.png`
 
 ---
 
 ## **Notes**
-- The **voltage and current vs. time plot** is useful for identifying anomalies and trends in battery cycling behavior.
-- The **power calculation function** helps assess **energy efficiency** and **performance**.
-- Ensure that the `data_folder` contains properly formatted raw data before running these functions.
+- This function helps analyze battery power variations over multiple cycles.
+- Ensure `df_cycle_grouped` and `df_combined` contain correctly labeled cycle data before running the functions.
+- If any cycle data is missing, respective plots will not be generated.
 
 ---
