@@ -21,7 +21,6 @@ This function generates **Voltage vs. Capacity (V-Q) plots** for all battery cyc
 
 ### **Outputs**
 - A **V-Q plot for all cycles** saved as `All_Cycles_V-Q_{file_name}.png`.
-- A separate **V-Q plot for Cycle 5**, displayed interactively.
 
 ### **Example Usage**
 ```python
