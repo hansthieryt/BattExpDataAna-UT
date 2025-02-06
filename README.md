@@ -77,3 +77,52 @@ This function calculates the State of Health (SOH) of the battery, a key indicat
 ### Data Processing & Analysis
 #### `DA06_Function_dQdV`
 This function calculates and visualizes the differential capacity (dQ/dV) curves. Following the curves, analysing the peaks detected for electrochemical reaction estimation analysis.
+
+
+## Organization of the repository
+|   DA_Main.py
+|   LICENSE
+|   README.md
+|   requirements.txt
+|
++---DA_Data
+|   +---B1T1
+|   |       B1T1_{sequence number: 0-32}
+|   |       ....
+|   |
+|   +---M1C1
+|   |       M1C1_0
+|   |       ....
+|   |
+|   +---M2C1
+|   |       M2C1_0
+|   |       ....
+|   |
+|   +---N1T1
+|   |       N1T1_{sequence number: 0-61}
+|   |       ....
+|   |
+|
++---DA_Function
+|   |   DA00_Function_Import_Main_df.py
+|   |   DA00_Function_Import_Main_df_README.md
+|   |   DA01_Function_VnIvsTime.py
+|   |   DA01_Function_VnIvsTime_README.md
+|   |   DA02_Function_VvsCap.py
+|   |   DA02_Function_VvsCap_README.md
+|   |   DA03_Function_Coulombic_Efficiency.py
+|   |   DA03_Function_Coulombic_Efficiency_README.md
+|   |   DA04_Function_SOH.py
+|   |   DA04_Function_SOH_README.md
+|   |   DA05_Function_Statistical_Model.py
+|   |   DA06_Function_dQdV.py
+|   |   DA06_Function_dQdV_README.md
+|   |
+|   +---For further development
+|   |       ML01_Function_Correlation.py
+|   |       ML02_Function_SOH_Prediction.py
+|   |
+|
++---images
+|       DA_Diagram_WhiteBG.png
+|   
