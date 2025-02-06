@@ -1,5 +1,5 @@
 # Battery Experiment Data Analysis - University of Twente (BattExpDataAna-UT)
-This repository contains Python functions for processing and analyzing battery experiment data. 
+The **Battery Experiment Data Analysis - University of Twente (BattExpDataAna-UT)** repository is a collection of Python functions designed to process and analyze battery experiment data.t provides tools for importing raw battery test data, processing it into structured DataFrames, and performing various analyses to understand battery performance.he repository includes modules for data import, cycle grouping, and voltage vs. capacity plotting, among other functionalities.t also specifies software dependencies and provides instructions for getting started with the analysis.
 
 ## Software Dependencies
 - Python
@@ -51,100 +51,30 @@ This package is designed to process multiple TXT files labeled in sequence as in
 - Realtime
 - dQ/dV(mAh/V)
 
-
 ## Functions Brief
 ![Battery Cycle Graph](images/DA_Diagram_WhiteBG.png)
-### Data Pre-processing (Import)
 
-#### `DA00_Function_Import_Main_df.py`
+### Data Pre-processing (Import)
+#### `DA00_Function_Import`
+This function imports raw battery data, cleans it, and prepares it for analysis by converting it into structured dataframes.
+#### `DA00_Function_df_Cycle_Grouping`
 This function imports raw battery data, cleans it, and prepares it for analysis by converting it into structured dataframes.
 
 ### Direct Plotting
-
-#### 2. `DA01_Function_VnIvsTime.py`
+#### `DA01_Function_VnIvsTime`
 This function analyzes and visualizes voltage and current variations over time during battery cycling.
-
-How It Works
-- Reads the processed dataframe.
-- Plots voltage and current against time.
-- Helps analyze battery performance over charge-discharge cycles.
-
-Usage
-```python
-from DA_Function.DA01_Function_VnIvsTime import plot_v_i_vs_time
-plot_v_i_vs_time(df)
-```
-
-#### 3. `DA02_Function_VvsCap.py`
+#### `DA02_Function_VvsCap`
 This function generates voltage vs. capacity plots to evaluate battery performance.
 
-How It Works
-- Extracts voltage and capacity data from the dataframe.
-- Plots a curve to visualize capacity retention and efficiency.
-
-Usage
-```python
-from DA_Function.DA02_Function_VvsCap import plot_v_vs_cap
-plot_v_vs_cap(df)
-```
-
 ### Data Processing & Plotting
-
-#### 4. `DA03_Function_Coulombic_Efficiency.py`
+#### `DA01_Function_Power`
+This function analyzes and visualizes voltage and current variations over time during battery cycling.
+#### `DA03_Function_Coulombic_Efficiency`
 This function calculates Coulombic efficiency, a key indicator of battery charge efficiency.
 
-How It Works
-- Computes Coulombic efficiency as:
-
-  \[ CE = \frac{\text{Discharge Capacity}}{\text{Charge Capacity}} \times 100\% \]
-
-- Returns efficiency percentage.
-
-Usage
-```python
-from DA_Function.DA03_Function_Coulombic_Efficiency import calculate_ce
-ce = calculate_ce(df)
-print(f"Coulombic Efficiency: {ce}%")
-```
-
-#### 5. `DA04_Function_SOH.py`
+#### `DA04_Function_SOH.py`
 This function calculates the State of Health (SOH) of the battery.
 
-How It Works
-- Compares current capacity to the original capacity.
-- Determines battery degradation over time.
-
-Usage
-```python
-from DA_Function.DA04_Function_SOH import calculate_soh
-soh = calculate_soh(df, initial_capacity=100)
-print(f"State of Health: {soh}%")
-```
-
-#### 6. `DA05_Function_Statistical_Model.py`
-Applies statistical models to analyze battery performance data.
-
-How It Works
-- Performs regression or statistical trend analysis.
-- Identifies patterns and predictions in battery performance.
-
-Usage
-```python
-from DA_Function.DA05_Function_Statistical_Model import apply_stat_model
-model_results = apply_stat_model(df)
-print(model_results)
-```
-
 ### Data Processing & Analysis
-#### 7. `DA06_Function_dQdV.py`
+#### `DA06_Function_dQdV`
 This function calculates and visualizes the differential capacity (dQ/dV) curves.
-
-How It Works
-- Computes differential capacity to study electrochemical properties.
-- Plots dQ/dV against voltage.
-
-Usage
-```python
-from DA_Function.DA06_Function_dQdV import plot_dqdv
-plot_dqdv(df)
-```
