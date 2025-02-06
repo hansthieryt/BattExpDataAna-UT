@@ -25,7 +25,7 @@ This function imports multiple raw battery test files, processes them by renamin
 4. Converts `Realtime` to pandas datetime format.
 5. Converts `Time` into a timedelta format for cycle-wise accumulation.
 6. Computes **Cycle Time** as cumulative duration per cycle.
-7. Calculates **SOH** using the ratio of `Capacity` to `rated_capacity`.
+7. Entries & Calculates **SOH** using the ratio of `Capacity` to `rated_capacity`.
 
 ### **Outputs**
 - A **structured DataFrame** (`df_main`) with imported and processed battery data.
