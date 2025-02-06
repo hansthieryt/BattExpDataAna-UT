@@ -93,11 +93,9 @@ This function calculates and visualizes the differential capacity (dQ/dV) curves
 |   |
 |   +---M1C1
 |   |       M1C1_0
-|   |       ....
 |   |
 |   +---M2C1
 |   |       M2C1_0
-|   |       ....
 |   |
 |   +---N1T1
 |   |       N1T1_{sequence number: 0-61}
