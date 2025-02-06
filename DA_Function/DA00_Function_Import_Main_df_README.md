@@ -1,5 +1,5 @@
 # DA00_Function_Import_Main_df
-
+![Data Processing & Analysis Diagram](../images/DA_Diagram_WhiteBG.png)
 This function is part of the **Data Import Module** in the **Battery Experiment Data Analysis - University of Twente (BattExpDataAna-UT)** repository. It is responsible for importing raw battery test data from multiple files, processing it into a structured DataFrame, and grouping data for further analysis.
 
 ---
