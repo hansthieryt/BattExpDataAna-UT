@@ -29,7 +29,7 @@ pip install -r requirements.txt
 ```
 
 ### 3. Prepare Data
-Place your experimental data files in the DA_Data folder. Ensure they are in the correct format as expected by the scripts.
+Place your experimental data files in the DA_Data folder. Ensure they are in the correct format as expected by the scripts. Output from Neware BTSDA software with custom setting could result in the csv files which could be exported into series of TXT files in format "{file_name}_{sequence number}".
 
 ### 4. Running the Main Script
 Execute the main script to start the data processing and analysis workflow:
