@@ -36,7 +36,7 @@ Execute the main script to start the data processing and analysis workflow:
 ```bash
 python DA_Main.py
 ```
-
+To execute certain data file pasted on 'DA_Data', change the input of 'file_name' and several other inputs on 'DA_main.py'.
 
 ## Data Requirements
 This package is designed to process multiple TXT files labeled in sequence as input and relies on specific column headers. Refer to the 'DA_Data' directory for example dataset files. The column header for each dataset file should include and appear exactly as follows:
@@ -80,7 +80,7 @@ This function calculates and visualizes the differential capacity (dQ/dV) curves
 
 
 ## Organization of the repository
-```bash
+```
 |   DA_Main.py
 |   LICENSE
 |   README.md
@@ -127,4 +127,9 @@ This function calculates and visualizes the differential capacity (dQ/dV) curves
 |
 ```
 
+## Example execution
 
+Example of the execution presented with the dataset on 'DA_Data' directory, with file_name: N1T1. The following is the example input on 'DA_Main.py'.
+```bash
+
+```
