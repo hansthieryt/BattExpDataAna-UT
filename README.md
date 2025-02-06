@@ -80,6 +80,7 @@ This function calculates and visualizes the differential capacity (dQ/dV) curves
 
 
 ## Organization of the repository
+```bash
 |   DA_Main.py
 |   LICENSE
 |   README.md
@@ -125,4 +126,7 @@ This function calculates and visualizes the differential capacity (dQ/dV) curves
 |
 +---images
 |       DA_Diagram_WhiteBG.png
-|   
+|
+```
+
+
