@@ -129,7 +129,7 @@ This function calculates and visualizes the differential capacity (dQ/dV) curves
 
 ## Example execution
 
-Example of the execution presented with the dataset on 'DA_Data' directory, with file_name: N1T1. The following is the example input on 'DA_Main.py'.
+Example of the execution presented with the dataset on 'DA_Data' directory, with file_name: N1T1 and the battery properties, such as rated capacity 2100 mAh. The following is the example input on 'DA_Main.py'.
 ```bash
 #----------------------------------Data input----------------------------------
 data_folder = 'DA_Data'                                                        # <=== Insert folder of the data file(s)
