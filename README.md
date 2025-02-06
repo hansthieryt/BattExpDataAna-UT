@@ -52,7 +52,7 @@ This package is designed to process multiple TXT files labeled in sequence as in
 - dQ/dV(mAh/V)
 
 ## Functions Brief
-![Battery Cycle Graph](images/DA_Diagram_WhiteBG.png)
+![Data Processing & Analysis Diagram](images/DA_Diagram_WhiteBG.png)
 
 ### Data Pre-processing (Import)
 #### `DA00_Function_Import`
