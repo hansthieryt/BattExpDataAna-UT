@@ -43,7 +43,7 @@ rated_capacity = 3000  # mAh
 # Import battery data
 df_main = DA00_Function_Import(data_folder, file_name, rated_capacity)
 ```
-![Data Processing & Analysis Diagram](../images/DA00_Example01.png)
+![DA00_Example01](../images/DA00_Example01.png)
 
 ---
 
