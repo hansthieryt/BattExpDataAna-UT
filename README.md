@@ -3,7 +3,7 @@ The **Battery Experiment Data Analysis - University of Twente (BattExpDataAna-UT
 
 ## Software Dependencies
 - Python
-- For python packages see requirements.txt
+- Python packages (requirements.txt)
   * os
   * pandas
   * functools
@@ -56,25 +56,24 @@ This package is designed to process multiple TXT files labeled in sequence as in
 
 ### Data Pre-processing (Import)
 #### `DA00_Function_Import`
-This function imports raw battery data, cleans it, and prepares it for analysis by converting it into structured dataframes.
+This function imports raw battery data, compiling it into dataframe, and renaming it accordingly.
 #### `DA00_Function_df_Cycle_Grouping`
-This function imports raw battery data, cleans it, and prepares it for analysis by converting it into structured dataframes.
+This function prepares the data on dataframe by grouping and pre-processing by accumulate necessary value, then export to two dataframes.
 
 ### Direct Plotting
 #### `DA01_Function_VnIvsTime`
-This function analyzes and visualizes voltage and current variations over time during battery cycling.
+This function generates plots of voltage and current variations over time during battery cycling.
 #### `DA02_Function_VvsCap`
 This function generates voltage vs. capacity plots to evaluate battery performance.
 
 ### Data Processing & Plotting
 #### `DA01_Function_Power`
-This function analyzes and visualizes voltage and current variations over time during battery cycling.
+This function analyzes power by calculating it through voltage and current data over time during battery cycling.
 #### `DA03_Function_Coulombic_Efficiency`
-This function calculates Coulombic efficiency, a key indicator of battery charge efficiency.
-
+This function calculates Coulombic efficiency, a key indicator of battery charge efficiency, and generates the efficiency vs. cycle plot.
 #### `DA04_Function_SOH.py`
-This function calculates the State of Health (SOH) of the battery.
+This function calculates the State of Health (SOH) of the battery, a key indicator of battery health condition, and generates the SOH percentage vs. cycle plot.
 
 ### Data Processing & Analysis
 #### `DA06_Function_dQdV`
-This function calculates and visualizes the differential capacity (dQ/dV) curves.
+This function calculates and visualizes the differential capacity (dQ/dV) curves. Following the curves, analysing the peaks detected for electrochemical reaction estimation analysis.
