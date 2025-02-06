@@ -4,6 +4,7 @@ This repository contains Python functions for processing and analyzing battery e
 ## Software Dependencies
 - Python
 - For python packages see requirements.txt
+  * re
 
 ## Getting Started
 ### 1. Clone the Repository:
