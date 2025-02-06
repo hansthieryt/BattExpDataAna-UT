@@ -6,7 +6,6 @@ This Python function `DA06_Function_dQdV` processes battery cycling data to calc
 
 ## Inputs
 - `file_name`: Name of the input file (string).
-- `df_cycle_grouped`: DataFrame containing battery cycling data, grouped by cycle.
 - `df_VQ_grouped`: DataFrame containing voltage and capacity data for cycles.
 - `show_on_plot`: A list of strings indicating which data types to plot (e.g., `'data'`, `'ori'`, `'int'`, `'smooth'`, `'peaks-fitting'`).
 - `interpolation_points`: Number of points to interpolate data to.
@@ -25,7 +24,7 @@ This Python function `DA06_Function_dQdV` processes battery cycling data to calc
 
 ## Processing Steps
 
-### 1. dQ/dV Calculation
+### 1. dQ/dV Calculation & Smoothing
 
 - **Interpolation**: Reduces data points for smoother analysis.
 - **Smoothing**: Uses the Savitzky-Golay filter to smooth the dQ/dV data.
@@ -58,6 +57,12 @@ This Python function `DA06_Function_dQdV` processes battery cycling data to calc
 - dQ/dV plot
 - 
 
+## Notes
+
+- The function assumes that the input data follows a specific naming convention for the columns related to each cycle.
+- The user must ensure that the input DataFrames (`df_cycle_grouped` and `df_VQ_grouped`) contain the necessary columns for each cycle.
+- The function provides flexibility in adjusting the peak detection and fitting parameters for different datasets.
+  
 ## Example Output
 
 The output consists of several files:
@@ -75,12 +80,6 @@ The resulting CSV contains columns such as:
 - `Cycle_1_VChg`, `Cycle_1_dQdVChg_Smooth`
 - `Cycle_2_VChg`, `Cycle_2_dQdVChg_Smooth`
 - And so on for each cycle.
-
-## Notes
-
-- The function assumes that the input data follows a specific naming convention for the columns related to each cycle.
-- The user must ensure that the input DataFrames (`df_cycle_grouped` and `df_VQ_grouped`) contain the necessary columns for each cycle.
-- The function provides flexibility in adjusting the peak detection and fitting parameters for different datasets.
 
 ## Example Usage
 
