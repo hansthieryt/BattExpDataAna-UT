@@ -4,33 +4,7 @@
 
 This Python function `DA06_Function_dQdV` processes battery cycling data to calculate, analyze, and visualize differential capacity (dQ/dV) versus voltage for charge and discharge cycles. The function provides functionalities for data interpolation, smoothing, peak detection, Gaussian fitting, and data visualization.
 
-## Requirements
-
-- Python 3.x
-- Libraries:
-  - pandas
-  - numpy
-  - matplotlib
-  - scipy
-  - lmfit
-
-Install the required libraries using:
-
-```bash
-pip install pandas numpy matplotlib scipy lmfit
-```
-
-## Function Signature
-
-```python
-def DA06_Function_dQdV(file_name, df_cycle_grouped, df_VQ_grouped, show_on_plot, interpolation_points, 
-                       window_length, polyorder, window_size, min_prominence, min_height, 
-                       max_prominence, max_height, prominence_step, height_step, 
-                       max_iterations, max_peaks, result_folder):
-```
-
-### Parameters
-
+## Inputs
 - `file_name`: Name of the input file (string).
 - `df_cycle_grouped`: DataFrame containing battery cycling data, grouped by cycle.
 - `df_VQ_grouped`: DataFrame containing voltage and capacity data for cycles.
@@ -49,7 +23,7 @@ def DA06_Function_dQdV(file_name, df_cycle_grouped, df_VQ_grouped, show_on_plot,
 - `max_peaks`: Maximum number of peaks to detect per cycle.
 - `result_folder`: Directory where results will be saved.
 
-## Function Flow
+## Processing Steps
 
 ### 1. dQ/dV Calculation
 
@@ -79,6 +53,10 @@ def DA06_Function_dQdV(file_name, df_cycle_grouped, df_VQ_grouped, show_on_plot,
 ### 6. Plotting All Cycles
 
 - A plot displaying all cycles with charge and discharge curves is saved in the `result_folder`.
+
+## Outputs
+- dQ/dV plot
+- 
 
 ## Example Output
 
