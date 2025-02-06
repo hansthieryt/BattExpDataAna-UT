@@ -4,7 +4,16 @@ This repository contains Python functions for processing and analyzing battery e
 ## Software Dependencies
 - Python
 - For python packages see requirements.txt
+  * os
+  * pandas
+  * functools
+  * matplotlib: pyplot, cm
+  * numpy
   * re
+  * lmfit models: GaussianModel, LorentzianModel, VoigtModel
+  * scipy: signal (savgol_filter, find_peaks), interpolate (interp1d), optimize (curve_fit)
+  * seaborn (for further development heatmap)
+  * scikit-learn (for further development prediction)
 
 ## Getting Started
 ### 1. Clone the Repository:
