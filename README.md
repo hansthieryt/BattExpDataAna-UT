@@ -43,21 +43,11 @@ This package is designed to process multiple TXT files labeled in sequence as in
 
 
 ## Functions Brief
+![Battery Cycle Graph](images/DA01_Diagram.png)
 ### Data Pre-processing (Import)
 
-#### 1. `DA00_Function_Import_Main_df.py`
+#### `DA00_Function_Import_Main_df.py`
 This function imports raw battery data, cleans it, and prepares it for analysis by converting it into structured dataframes.
-
-How It Works
-- Reads raw data files from the `DA_Data` folder.
-- Cleans missing values and formats the data.
-- Returns structured dataframes for further processing.
-
-Usage
-```python
-from DA_Function.DA00_Function_Import_Main_df import import_main_df
-df = import_main_df("datafile.csv")
-```
 
 ### Direct Plotting
 
