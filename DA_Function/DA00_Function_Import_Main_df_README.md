@@ -30,21 +30,6 @@ This function imports multiple raw battery test files, processes them by renamin
 ### **Outputs**
 - A **structured DataFrame** (`df_main`) with imported and processed battery data.
 
-### **Example Usage**
-```python
-from DA_Functions.DA00_Function_Import import DA00_Function_Import
-import pandas as pd
-
-# Define parameters
-data_folder = "Raw_Data"
-file_name = "Battery_Test"
-rated_capacity = 3000  # mAh
-
-# Import battery data
-df_main = DA00_Function_Import(data_folder, file_name, rated_capacity)
-```
-![DA00_Example01](../images/DA00_Example01.png)
-
 ---
 
 ## **Function: DA00_Function_df_Cycle_Grouping**
@@ -67,18 +52,6 @@ This function groups battery test data by **Cycle ID** and organizes charge/disc
 - **df_cycle_grouped:** A grouped DataFrame by cycle ID.
 - **df_VQ_grouped.csv:** Processed charge/discharge data per cycle.
 - **df_main_ML.csv:** Downsampled dataset for machine learning applications.
-
-### **Example Usage**
-```python
-from DA_Functions.DA00_Function_Import import DA00_Function_df_Cycle_Grouping
-
-# Define parameters
-result_folder = "Processed_Results"
-file_name = "Battery_Test"
-
-# Group cycle data
-df_cycle_grouped, df_VQ_grouped = DA00_Function_df_Cycle_Grouping(df_main, result_folder, file_name)
-```
 
 ---
 
