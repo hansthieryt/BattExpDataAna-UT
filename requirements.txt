@@ -1,5 +1,3 @@
-os
-re
 functools
 lmfit
 matplotlib
