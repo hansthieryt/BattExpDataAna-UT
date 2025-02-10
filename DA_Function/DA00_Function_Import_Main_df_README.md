@@ -24,8 +24,6 @@ This function imports multiple raw battery test files, processes them by renamin
    - `dQ/dV(mAh/V)` → `dQdV`
 4. Converts `Realtime` to pandas datetime format.
 5. Converts `Time` into a timedelta format for cycle-wise accumulation.
-6. Computes **Cycle Time** as cumulative duration per cycle.
-7. Entries & Calculates **SOH** using the ratio of `Capacity` to `rated_capacity`.
 
 ### **Outputs**
 - A **structured DataFrame** (`df_main`) with imported and processed battery data.
@@ -43,15 +41,14 @@ This function groups battery test data by **Cycle ID** and organizes charge/disc
 
 ### **Processing Steps**
 1. Creates a result folder if it does not exist.
-2. Groups the DataFrame by `Cycle ID` and extracts charge (`CC_Chg`, `CV_Chg`) and discharge (`CC_DChg`) steps.
-3. Computes **voltage-capacity curves** for both charge and discharge steps.
-4. Saves grouped cycle data into `df_VQ_grouped.csv`.
-5. Downsamples `df_main` for machine learning compatibility and saves it as `df_main_ML.csv`.
+2. Groups the DataFrame by `Cycle ID` into `df_cycle_grouped` DataFrame
+4. Accumulates charge capacity value phases (`CC_Chg`, `CV_Chg`)
+5. Extracts Voltage and Capacity values per cycle in columns (axis=1) into DataFrame `df_VQ_grouped`.
+6. Saves the DataFrame into `df_VQ_grouped.csv`.
 
 ### **Outputs**
 - **df_cycle_grouped:** A grouped DataFrame by cycle ID.
 - **df_VQ_grouped.csv:** Processed charge/discharge data per cycle.
-- **df_main_ML.csv:** Downsampled dataset for machine learning applications.
 
 ---
 
@@ -59,6 +56,5 @@ This function groups battery test data by **Cycle ID** and organizes charge/disc
 - Ensure all `.txt` files are correctly formatted before running the import function.
 - The function stops reading when a missing file is detected in the sequence.
 - Grouped cycle data enables further analysis, such as **Voltage vs. Capacity (V-Q) plotting**.
-- Downsampled data helps optimize computational efficiency for machine learning models.
 
 ---
