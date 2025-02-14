@@ -3,14 +3,13 @@ The **Battery Experiment Data Analysis - University of Twente (BattExpDataAna-UT
 
 ## Software Dependencies
 - Python
-- Python packages (requirements.txt)
-  * os
+- Python packages (see requirements.txt)
+  * os (pre-installed)
+  * re (pre-installed)
+  * functools (pre-installed)
   * pandas
-  * functools
   * matplotlib: pyplot, cm
   * numpy
-  * re
-  * lmfit models: GaussianModel, LorentzianModel, VoigtModel
   * scipy: signal (savgol_filter, find_peaks), interpolate (interp1d), optimize (curve_fit)
   * seaborn (for further development heatmap)
   * scikit-learn (for further development prediction)
