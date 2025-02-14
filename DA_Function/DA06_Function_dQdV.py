@@ -1,20 +1,11 @@
 # -*- coding: utf-8 -*-
 """
 Code for automated data preprocessing
-Import
-Sorting data
-    - Group by cycle
-    - 1. VvsCap / CC-Ch and CV-Ch combined and separeted from CC-Dch
-    - 2. CapvsCyc incl. CE
-    - 3. dqdVvsV 
-    - 4. Curvst in CV steps
-Export
-
 
 Code Structure:
 1. Main
 2. DA00: Data Import, Dataframe creation, grouping
-3. DA01: Plot & analysis of Voltage and Current to Time
+3. DA01: Plot & analysis of Voltage, Current, Power to Time
 4. DA02: Plot & analysis of Voltage to Capacity (Potential Profile)
 5. DA03: Plot & analysis of Coulombic Efficiency
 6. DA04: Plot & analysis SOH over cycles
@@ -27,7 +18,6 @@ Code Structure:
 
 Authors: Hans and Matthias
 
-
 """
 import pandas as pd
 import numpy as np
@@ -36,25 +26,22 @@ from scipy.signal import savgol_filter
 from scipy.interpolate import interp1d
 from scipy.signal import find_peaks
 from scipy.optimize import curve_fit
-from lmfit.models import GaussianModel, LorentzianModel, VoigtModel
 import re
 
-def DA06_Function_dQdV(file_name,df_cycle_grouped,df_VQ_grouped,show_on_plot,
-                       interpolation_points,window_length,polyorder,window_size,
-                       min_prominence,min_height,max_prominence,max_height,
-                       prominence_step,height_step,max_iterations,max_peaks,
-                       result_folder):
+def DA06_Function_dQdV(file_name,df_VQ_grouped,show_on_plot,
+                       interpolation_points,window_length,polyorder,
+                       window_size,min_prominence,min_height,max_prominence,
+                       max_height,prominence_step,height_step,max_iterations,
+                       max_peaks,result_folder):
 
-#--------------------------------dQ/dV calculation-----------------------------
-    # Interpolation function to reduce data points
+#----------------------------------Functions-----------------------------------
+    # Function of interpolation to reduce data points
     def interpolate_data(x, y, num_points):
         if len(x) < 2 or len(y) < 2:
             return x, y  # No interpolation possible
-        
         interpolation_func = interp1d(x, y, kind='linear')
         new_x = np.linspace(np.min(x), np.max(x), num_points)
         new_y = interpolation_func(new_x)
-        
         return new_x, new_y
 
     # Function to smooth data using Savitzky-Golay filter
@@ -62,22 +49,28 @@ def DA06_Function_dQdV(file_name,df_cycle_grouped,df_VQ_grouped,show_on_plot,
         if len(y) < 3:
             return y  # Not enough data to smooth
         return savgol_filter(y,window_length,polyorder)
-     
+
+    # Function for fitting
+    def gaussian(x, amp, mean, sigma):
+        # Convert inputs to float to avoid type mismatch errors
+        amp, mean, sigma = map(float, (amp, mean, sigma))  # Convert parameters to float only
+        return amp * np.exp(-(x - mean)**2 / (2 * sigma**2))  # Array-safe operation
+
+#-----------------Initiation: create DataFrame & call Cycle ID-----------------   
+    # Create DataFrames
     dqdv_data = []
     df_dqdv_data = []
     df_peaks_data = []
-    df_peaks_data_2 = []
     gaussian_results = []
-    overvoltage_data = []
- 
-    
+
     # Extract unique cycle numbers from the column names
     cycle_columns = [col for col in df_VQ_grouped.columns if re.match(r'Cycle_\d+_', col)]
     cycle_numbers = sorted({int(re.search(r'Cycle_(\d+)_', col).group(1)) for col in cycle_columns})
 
+#---------------Calculating & Smoothing dQ/dV, Plotting per Cycle--------------
     for cycle_id in cycle_numbers:
 
-        # Calculate dQ/dV for Charge
+    #-------------------------------On Charging--------------------------------
         if f'Cycle_{cycle_id}_CapChg' in df_VQ_grouped and f'Cycle_{cycle_id}_VChg' in df_VQ_grouped and f'Cycle_{cycle_id}_dQdVChg' in df_VQ_grouped:
             capchg = df_VQ_grouped[f'Cycle_{cycle_id}_CapChg'].dropna()
             vchg = df_VQ_grouped[f'Cycle_{cycle_id}_VChg'].dropna()
@@ -99,7 +92,7 @@ def DA06_Function_dQdV(file_name,df_cycle_grouped,df_VQ_grouped,show_on_plot,
             })
             df_dqdv_data.append(dqdv_data)
             
-        # Calculate dQ/dV for Discharge
+    #-----------------------------On Discharging-------------------------------
         if f'Cycle_{cycle_id}_CapDChg' in df_VQ_grouped and f'Cycle_{cycle_id}_VDChg' in df_VQ_grouped and f'Cycle_{cycle_id}_dQdVDChg' in df_VQ_grouped:
             capdchg = df_VQ_grouped[f'Cycle_{cycle_id}_CapDChg'].dropna()
             vdchg = df_VQ_grouped[f'Cycle_{cycle_id}_VDChg'].dropna()
@@ -121,46 +114,50 @@ def DA06_Function_dQdV(file_name,df_cycle_grouped,df_VQ_grouped,show_on_plot,
             })
             df_dqdv_data.append(dqdv_data)
 
-#-------------------------Plotting dQ/dV----------------------------------
+    #----------------------------Plotting per cycle----------------------------
         # Plotting dQ/dV vs Voltage
         if 'data' or 'ori' or 'int' or 'smooth' in show_on_plot:
             plt.figure(figsize=(10, 6))
      
-            # Plot Charge dQ/dV data from Neware
+            # Plot dQ/dV data from Neware
             if 'data' in show_on_plot:
                 plt.plot(vchg, dqdvchg, label='Charge data', linestyle='--', color='purple')
                 plt.plot(vdchg, dqdvdchg, label='Discharge data', linestyle='--', color='orange')
                 
-            # Plot Charge dQ/dV original calculated 
+            # Plot calculated dQ/dV 
             if 'ori' in show_on_plot:
                 plt.scatter(vchg[:-1], dQdV_chg_ori, label='Charge ori', color='purple')
                 plt.scatter(vdchg[:-1], dQdV_dchg_ori, label='Discharge ori', color='orange')
                      
-            # Plot Charge dQ/dV interpolated 
+            # Plot interpolated dQ/dV
             if 'int' in show_on_plot:
                 plt.plot(vchg_interp[:-1], dQdV_chg_int, label='Charge int', linestyle='--', color='cyan')
                 plt.plot(vdchg_interp[:-1], dQdV_dchg_int, label='Discharge int', linestyle='--', color='yellow')
                 
-            # Plot Charge dQ/dV interpolated and smoothed
+            # Plot smoothed dQ/dV
             if 'smooth' in show_on_plot:
                 plt.plot(vchg_interp[:-1], dQdV_chg_smooth, label='Charge smooth', color='blue')
                 plt.plot(vdchg_interp[:-1], dQdV_dchg_smooth, label='Discharge smooth', color='red')
-            
-            # Add labels, title, and legend
+        
             plt.xlabel('Voltage (V)')
             plt.ylabel('dQ/dV (mAh/V)')
-            plt.ylim(-8000, 8000)
+            plt.ylim((dQdV_dchg_int.min()*1.05), (dQdV_chg_int.max()*1.05))
             plt.title(f'dQ/dV Curve of {file_name} Cycle {cycle_id}')
             plt.legend()
             plt.grid(True)
             plt.tight_layout()
             plt.savefig(f'{result_folder}/{file_name}/dQdV_{file_name}_Cycle_{cycle_id}.png', dpi=300)
             plt.show()
+            
+        else:
+            continue
      
     # Export the dQ/dV data to a CSV
     df_dqdv = pd.concat(df_dqdv_data, axis=1)
-    df_dqdv.to_csv(f'{result_folder}/{file_name}/df_dQdV_{file_name}_filtered.csv', index=False)
-    print("dQ/dV data saved successfully to",f'{result_folder}/{file_name}/df_dQdV_{file_name}_filtered.csv')
+    df_dqdv.to_csv(f'{result_folder}/{file_name}/df_dQdV_{file_name}.csv', index=False)
+    print("dQ/dV data saved successfully to",f'{result_folder}/{file_name}/df_dQdV_{file_name}.csv')
+    pd.set_option('display.max_columns', None)  # Show all columns   
+    print('DataFrame df_dqdv preview: ',df_dqdv.head(5))
 
 #-----------------------------Plot all cycles----------------------------------       
     # Create the plot with a rainbow color map, all cycles
@@ -173,19 +170,17 @@ def DA06_Function_dQdV(file_name,df_cycle_grouped,df_VQ_grouped,show_on_plot,
             cycle_id = 2
             idx = 2
         else :
-            # Plot Charge
+            #---------------------------On Charging----------------------------
             if f'Cycle_{cycle_id}_VChg' in df_dqdv and f'Cycle_{cycle_id}_dQdVChg_Smooth' in df_dqdv:
                 plt.plot(df_dqdv[f'Cycle_{cycle_id}_VChg'], 
-                         df_dqdv[f'Cycle_{cycle_id}_dQdVChg_Smooth'], 
-                         #label=f'Cycle {cycle_id} Charge', 
+                         df_dqdv[f'Cycle_{cycle_id}_dQdVChg_Smooth'],  
                          color=color)
 
-            # Plot Discharge
+            #--------------------------On Discharging--------------------------
             if f'Cycle_{cycle_id}_VDChg' in df_dqdv and f'Cycle_{cycle_id}_dQdVDChg_Smooth' in df_dqdv:
                 plt.plot(df_dqdv[f'Cycle_{cycle_id}_VDChg'],
-                         df_dqdv[f'Cycle_{cycle_id}_dQdVDChg_Smooth'], linestyle='--', 
-                         #label=f'Cycle {cycle_id} Discharge', 
-                         color=color)
+                         df_dqdv[f'Cycle_{cycle_id}_dQdVDChg_Smooth'], 
+                         linestyle='--', color=color)
 
     plt.xlabel('Voltage (V)')
     plt.ylabel('Diffential Capacity (dQ/dV)')
@@ -194,23 +189,14 @@ def DA06_Function_dQdV(file_name,df_cycle_grouped,df_VQ_grouped,show_on_plot,
     plt.legend()
     plt.grid(True)
     plt.savefig(f'{result_folder}/{file_name}/All_Cycles_dQdV_{file_name}.png')
-
-#-----------------------Function for fitting & categorize----------------------
-    # Function for fitting
-    def gaussian(x, amp, mean, sigma):
-        # Convert inputs to float to avoid type mismatch errors
-        amp, mean, sigma = map(float, (amp, mean, sigma))  # Convert parameters to float only
-        return amp * np.exp(-(x - mean)**2 / (2 * sigma**2))  # Array-safe operation
-
-    def voigt(x, amp, cen, sigma, gamma):
-        return amp * np.real(np.exp(-(x - cen) ** 2 / (2 * sigma ** 2)) + gamma / (sigma * np.sqrt(2 * np.pi)))
-           
+    plt.show()
+      
 #-----------------------Peaks finding & Gaussian Fitting-----------------------
-
     # Plot Charge dQ/dV with significant peaks
     if 'peaks-fitting' in show_on_plot:
         for cycle_id in cycle_numbers:                       
-            # Start with minimum prominence and height values
+        #-----------------------------Peak Finding-----------------------------
+            #---------------------------On Charging----------------------------
             height_range = min_height
             prominence_range = min_prominence
             Chg_peak_indices = []
@@ -218,6 +204,8 @@ def DA06_Function_dQdV(file_name,df_cycle_grouped,df_VQ_grouped,show_on_plot,
             dqdv_chg_smooth = df_dqdv[f'Cycle_{cycle_id}_dQdVChg_Smooth']
             print(dqdv_chg_smooth)
             v_chg_smooth = df_dqdv[f'Cycle_{cycle_id}_VChg']
+            
+            # Looping height and prominence from minimum value for flexibility
             while (len(Chg_peak_indices) > max_peaks or len(Chg_peak_indices) == 0) and iterations < max_iterations:
                 print(f"Iteration {iterations}: len(Chg_peak_indices) = {len(Chg_peak_indices)}, height_range = {height_range}, prominence_range = {prominence_range}")
     
@@ -234,24 +222,23 @@ def DA06_Function_dQdV(file_name,df_cycle_grouped,df_VQ_grouped,show_on_plot,
                     height_range = max(height_range - height_step, min_height)
                     prominence_range = max(prominence_range - prominence_step, min_prominence)
     
-                # Increment iteration count
-                iterations += 1
+                iterations += 1     # Increment iteration count
             
             # Final peak detection after exiting the loop
             Chg_peak_indices, _ = find_peaks(dqdv_chg_smooth, height=height_range, prominence=prominence_range)
             Chg_peak_voltages = v_chg_smooth[Chg_peak_indices]
             Chg_peak_heights = dqdv_chg_smooth[Chg_peak_indices]
-            
             print(f"On Cycle {cycle_id},Charge, the Peaks are Peak Voltages: {Chg_peak_voltages}, Peak Heights: {Chg_peak_heights}, Peak Indices: {Chg_peak_indices}\n")
     
-            #-----------------------------Discharge--------------------------------
-            # Start with minimum prominence and height values
+            #--------------------------On Discharging--------------------------
             height_range = min_height
             prominence_range = min_prominence
             DChg_peak_indices = []
             iterations = 0
             dqdv_dchg_smooth = df_dqdv[f'Cycle_{cycle_id}_dQdVDChg_Smooth']
             v_dchg_smooth = df_dqdv[f'Cycle_{cycle_id}_VDChg']
+            
+            # Looping height and prominence from minimum value for flexibility
             while (len(DChg_peak_indices) > max_peaks or len(DChg_peak_indices) == 0) and iterations < max_iterations:
                 print(f"Iteration {iterations}: len(DChg_peak_indices) = {len(DChg_peak_indices)}, height_range = {height_range}, prominence_range = {prominence_range}")
     
@@ -267,15 +254,13 @@ def DA06_Function_dQdV(file_name,df_cycle_grouped,df_VQ_grouped,show_on_plot,
                     print("No peaks detected; decreasing thresholds")
                     height_range = max(height_range - height_step, min_height)
                     prominence_range = max(prominence_range - prominence_step, min_prominence)
-    
-                # Increment iteration count
-                iterations += 1
+
+                iterations += 1     # Increment iteration count
     
             # Final peak detection after exiting the loop
             DChg_peak_indices, _ = find_peaks(-dqdv_dchg_smooth, height=height_range, prominence=prominence_range)
             DChg_peak_voltages = v_dchg_smooth[DChg_peak_indices]
             DChg_peak_heights = dqdv_dchg_smooth[DChg_peak_indices]
-            
             print(f"On Cycle {cycle_id}, Discharge, the Peaks are Peak Voltages: {DChg_peak_voltages}, Peak Heights: {DChg_peak_heights}, Peak Indices: {DChg_peak_indices}\n")
 
             # Combine peak data into a dataframe for further analysis or export
@@ -288,21 +273,13 @@ def DA06_Function_dQdV(file_name,df_cycle_grouped,df_VQ_grouped,show_on_plot,
             })
             df_peaks_data.append(peaks_data)
             
-            peaks_data_2 = pd.DataFrame({
-                'Cycle ID': cycle_id,
-                'Charge Voltage': Chg_peak_voltages.reset_index(drop=True),
-                'Discharge Voltage': DChg_peak_voltages.reset_index(drop=True),
-                'Overvoltage': Chg_peak_voltages.reset_index(drop=True)-DChg_peak_voltages.reset_index(drop=True)
-            })
-            df_peaks_data_2.append(peaks_data_2)
-        
-            
-            # Prepare to fit Gaussian curves
+        #---------------Gaussian Fitting based on Detected Peaks---------------
             Chg_gauss_params = []
             DChg_gauss_params = []  
             Chg_gauss_area = []
             DChg_gauss_area = []
-    
+            
+            #---------------------------On Charging----------------------------
             for Chg_peak in Chg_peak_indices:
                 # Take a small window around each peak for fitting
                 Chg_x_peak = v_chg_smooth[max(0, Chg_peak - window_size):min(len(v_chg_smooth), Chg_peak + window_size)]
@@ -311,17 +288,17 @@ def DA06_Function_dQdV(file_name,df_cycle_grouped,df_VQ_grouped,show_on_plot,
                 # Initial guesses for amp, mean, sigma
                 Chg_amp_guess = dqdv_chg_smooth[Chg_peak]
                 Chg_mean_guess = v_chg_smooth[Chg_peak]
-                Chg_sigma_guess = 0.05  # Adjust this value based on your expected peak widths
+                Chg_sigma_guess = 0.05
                 
                 try:
                     Chg_popt, _ = curve_fit(gaussian, Chg_x_peak, Chg_y_peak, p0=[Chg_amp_guess, Chg_mean_guess, Chg_sigma_guess], maxfev=5000)
                     Chg_area = Chg_popt[0] * Chg_popt[2] * np.sqrt(2 * np.pi)
-                    Chg_gauss_params.append(Chg_popt)  # Append cycle ID and type to params   
+                    Chg_gauss_params.append(Chg_popt)  
                     Chg_gauss_area.append(Chg_area)
                 except RuntimeError:
-                    # Skip if fitting fails
-                    continue
-    
+                    continue # Skip if fitting fails
+                
+            #--------------------------On Discharging--------------------------
             for DChg_peak in DChg_peak_indices:
                 # Take a small window around each peak for fitting
                 DChg_x_peak = v_dchg_smooth[max(0, DChg_peak - window_size):min(len(v_dchg_smooth), DChg_peak + window_size)]
@@ -330,19 +307,18 @@ def DA06_Function_dQdV(file_name,df_cycle_grouped,df_VQ_grouped,show_on_plot,
                 # Initial guesses for amp, mean, sigma
                 DChg_amp_guess = dqdv_dchg_smooth[DChg_peak]
                 DChg_mean_guess = v_dchg_smooth[DChg_peak]
-                DChg_sigma_guess = 0.5  # Adjust this value based on your expected peak widths
+                DChg_sigma_guess = 0.5
                    
                 # Fit Gaussian to each peak
                 try:
                     DChg_popt, _ = curve_fit(gaussian, DChg_x_peak, DChg_y_peak, p0=[DChg_amp_guess, DChg_mean_guess, DChg_sigma_guess], maxfev=5000)
                     DChg_area = DChg_popt[0] * DChg_popt[2] * np.sqrt(2 * np.pi)
-                    DChg_gauss_params.append(DChg_popt)  # Append cycle ID and type to params     
+                    DChg_gauss_params.append(DChg_popt)     
                     DChg_gauss_area.append(DChg_area)
                 except RuntimeError:
-                    # Skip if fitting fails
-                    continue
+                    continue # Skip if fitting fails
             
-            #---------------------------Plotting-------------------------------
+            #------------------Plotting Fitted Curve on dQ/dV------------------
             plt.figure(figsize=(12, 6))
 
             # Plot the smoothed dQ/dV curve
@@ -366,7 +342,7 @@ def DA06_Function_dQdV(file_name,df_cycle_grouped,df_VQ_grouped,show_on_plot,
             # Add labels, title, and legend
             plt.xlabel('Voltage (V)')
             plt.ylabel('dQ/dV (mAh/V)')
-            plt.ylim(-8000, 8000)
+            plt.ylim(dqdv_dchg_smooth[DChg_peak_indices].min(), dqdv_chg_smooth[Chg_peak_indices].max())
             plt.title(f'dQ/dV Curve with fitting of {file_name} Cycle {cycle_id}')
             plt.legend()
             plt.grid(True)
@@ -374,7 +350,7 @@ def DA06_Function_dQdV(file_name,df_cycle_grouped,df_VQ_grouped,show_on_plot,
             plt.savefig(f'{result_folder}/{file_name}/dQdV_fitting_{file_name}_Cycle_{cycle_id}.png', dpi=300)
             plt.show()   
             
-            # Gaussian peak
+            #-------------------Compiling Fitted Properties--------------------
             peak_no_Chg = 1
             for chg_popt in Chg_gauss_params:
                 chg_popt = list(chg_popt)  # Convert to list for safe concatenation
@@ -390,42 +366,20 @@ def DA06_Function_dQdV(file_name,df_cycle_grouped,df_VQ_grouped,show_on_plot,
                 dchg_label = peak_no_DChg
                 peak_no_DChg += 1
                 gaussian_results.append([cycle_id, 'Discharge', dchg_label, *dchg_popt, dchg_area])
-                
-            # # Overvoltage calculation within same peak number and cycle number
-            # charge_peaks = [x for x in gaussian_results if x[1] == 'Charge' and x[0] == cycle_id]
-            # discharge_peaks = [x for x in gaussian_results if x[1] == 'Discharge' and x[0] == cycle_id]
-    
-            # for chg in charge_peaks:
-            #     for dchg in discharge_peaks:
-            #         if chg[2] == dchg[2]:  # Same peak label
-            #             overvoltage = chg[4] - dchg[4]
-            #             overvoltage_data.append([cycle_id, chg[2], chg[4], dchg[4], overvoltage])       
                     
-#----------------------------------Exporting-----------------------------------  
+    #--------------------------------Exporting---------------------------------
         # Export peak data to CSV
         df_peaks = pd.concat(df_peaks_data, axis=1)
         df_peaks.to_csv(f'{result_folder}/{file_name}/df_peaks_{file_name}.csv', index=False)
         print("Peaks data saved successfully to", f'{result_folder}/{file_name}/df_peaks_{file_name}.csv')
+        pd.set_option('display.max_columns', None)  # Show all columns   
+        print('DataFrame df_peaks preview: ',df_peaks.head(5))
         
-        df_peaks_2 = pd.concat(df_peaks_data_2)
-        df_peaks_2.to_csv(f'{result_folder}/{file_name}/overvoltage_{file_name}.csv', index=False)
-        print("Overvoltage data saved successfully to", f'{result_folder}/{file_name}/overvoltage_{file_name}.csv')
-        
-        # Export the dQ/dV data to a CSV
-        df_dqdv = pd.concat(df_dqdv_data, axis=1)
-        df_dqdv.to_csv(f'{result_folder}/{file_name}/df_dQdV_{file_name}_filtered.csv', index=False)
-        print("dQ/dV data saved successfully to",f'{result_folder}/{file_name}/df_dQdV_{file_name}_filtered.csv')
-        
-        # Convert to DataFrames and export
-        gaussian_df = pd.DataFrame(gaussian_results, columns=['Cycle ID', 'Status', 'Peak No', 'Amplitude', 'Mean', 'Sigma', 'Area'])
-        # overvoltage_df = pd.DataFrame(overvoltage_data, columns=['Cycle ID', 'Peak No', 'Charge Voltage', 'Discharge Voltage', 'Overvoltage'])
-
-        gaussian_df.to_csv(f'{result_folder}/{file_name}/gaussian_fits_{file_name}.csv', index=False)
-        print("Gaussian fitting properties saved successfully to",f'{result_folder}/{file_name}/gaussian_fits_{file_name}.csv')
-        
-        # overvoltage_df.to_csv(f'{result_folder}/{file_name}/overvoltage_{file_name}.csv', index=False)
-        # print("Overvoltage data saved successfully to",f'{result_folder}/{file_name}/overvoltage_{file_name}.csv')
-        
-def DA06_Function_dQdV_Combined(result_folder,df_combined,interpolation_points,window_length,polyorder):
+        # Export fitted peaks properties data to CSV
+        df_fitting = pd.DataFrame(gaussian_results, columns=['Cycle ID', 'Status', 'Peak No', 'Amplitude', 'Mean', 'Sigma', 'Area'])
+        df_fitting.to_csv(f'{result_folder}/{file_name}/df_fitting_{file_name}.csv', index=False)
+        print("Gaussian fitting properties saved successfully to",f'{result_folder}/{file_name}/df_fitting_{file_name}.csv')
+        pd.set_option('display.max_columns', None)  # Show all columns   
+        print('DataFrame df_fitting preview: ',df_fitting.head(5))
     
-    return
+    return df_dqdv, df_peaks, df_fitting

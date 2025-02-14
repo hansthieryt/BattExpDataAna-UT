@@ -1,20 +1,11 @@
 # -*- coding: utf-8 -*-
 """
 Code for automated data preprocessing
-Import
-Sorting data
-    - Group by cycle
-    - 1. VvsCap / CC-Ch and CV-Ch combined and separeted from CC-Dch
-    - 2. CapvsCyc incl. CE
-    - 3. dqdVvsV 
-    - 4. Curvst in CV steps
-Export
-
 
 Code Structure:
 1. Main
 2. DA00: Data Import, Dataframe creation, grouping
-3. DA01: Plot & analysis of Voltage and Current to Time
+3. DA01: Plot & analysis of Voltage, Current, Power to Time
 4. DA02: Plot & analysis of Voltage to Capacity (Potential Profile)
     5. DA03: Plot & analysis of Coulombic Efficiency
 6. DA04: Plot & analysis SOH over cycles
@@ -33,9 +24,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import re
 
-#--------------------------------CE over cycles--------------------------------
-# Plot SOH estimation along the cycles
-
+#---------------------Processing & Plotting CE over cycles---------------------
 def DA03_Function_Coulombic_Efficiency(df_VQ_grouped,file_name,result_folder):   
     ce_cycle = []
     
@@ -53,6 +42,8 @@ def DA03_Function_Coulombic_Efficiency(df_VQ_grouped,file_name,result_folder):
         total_CapChg = cchg.iloc[-1] if not cchg.empty else 0
         total_CapDChg = cdchg.iloc[-1] if not cdchg.empty else 0
         ce = (total_CapDChg / total_CapChg) * 100 if total_CapChg > 0 else 0
+        if ce > 100:
+            continue
         
         # Combine into a DataFrame
         ce_cycle.append({
@@ -65,7 +56,8 @@ def DA03_Function_Coulombic_Efficiency(df_VQ_grouped,file_name,result_folder):
     # Create a DataFrame for Coulombic Efficiencies and save the result
     df_ce = pd.DataFrame(ce_cycle)
     df_ce.to_csv(f'{result_folder}/{file_name}/df_CE_{file_name}.csv', index=False)
-    # print(df_ce)
+    pd.set_option('display.max_columns', None)  # Show all columns   
+    print('DataFrame df_ce preview: ',df_ce.head(5))
     
     fig, ax1 = plt.subplots(figsize=(10, 6))
 
@@ -75,14 +67,13 @@ def DA03_Function_Coulombic_Efficiency(df_VQ_grouped,file_name,result_folder):
     ax1.plot(df_ce['Cycle_ID'], df_ce['Coulombic_Efficiency'], color=color, 
              marker='o', label='Coulombic Efficiency')
     ax1.tick_params(axis='y', labelcolor=color)
-    plt.ylim(0, 250)
+    plt.ylim((df_ce['Coulombic_Efficiency'].min()-0.3), (df_ce['Coulombic_Efficiency'].max()+0.3))
 
     ax2 = ax1.twinx()
-    color = 'tab:red'
     ax2.set_ylabel('Capacity (mAh)', color=color)
     ax2.plot(df_ce['Cycle_ID'], df_ce['Charge_Capacity'], color='tab:green', 
-             marker='x', linestyle='-', label='Charge Capacity')
-    ax2.plot(df_ce['Cycle_ID'], df_ce['Discharge_Capacity'], color=color, 
+             marker='x', linestyle='--', label='Charge Capacity')
+    ax2.plot(df_ce['Cycle_ID'], df_ce['Discharge_Capacity'], color='tab:red', 
              marker='x', linestyle='--', label='Discharge Capacity')
     ax2.tick_params(axis='y', labelcolor=color)
 
@@ -91,7 +82,7 @@ def DA03_Function_Coulombic_Efficiency(df_VQ_grouped,file_name,result_folder):
     plt.title(f'Coulombic Efficiency and Capacity vs Cycle - {file_name}')
     plt.grid(True)
     plt.savefig(f'{result_folder}/{file_name}/CE-cycles_{file_name}.png', dpi=300)
-    plt.close()
+    plt.show()
     
-    return 
+    return df_ce
     

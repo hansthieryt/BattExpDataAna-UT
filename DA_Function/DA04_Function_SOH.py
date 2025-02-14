@@ -1,15 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 Code for automated data preprocessing
-Import
-Sorting data
-    - Group by cycle
-    - 1. VvsCap / CC-Ch and CV-Ch combined and separeted from CC-Dch
-    - 2. CapvsCyc incl. CE
-    - 3. dqdVvsV 
-    - 4. Curvst in CV steps
-Export
-
 
 Code Structure:
 1. Main
@@ -29,74 +20,52 @@ Authors: Hans and Matthias
 
 """
 
+import re
 import pandas as pd
 import matplotlib.pyplot as plt
 
-#-------------------------------SOH over cycles--------------------------------
-# Plot SOH estimation along the cycles
- 
-def DA04_Function_SOH(df_cycle_grouped,rated_capacity,file_name,result_folder):
-    SOH_data_combined = []
+#--------------------Processing & Plotting SOH over cycles---------------------
+def DA04_Function_SOH(df_VQ_grouped,rated_capacity,file_name,result_folder):
+    SOH_data = []
     
-    cycles = df_cycle_grouped['Cycle ID'].unique()
-    max_capacity_per_cycle = df_cycle_grouped['Capacity'].max()
+    # Extract unique cycle numbers from the column names
+    cycle_columns = [col for col in df_VQ_grouped.columns if re.match(r'Cycle_\d+_', col)]
+    cycle_numbers = sorted({int(re.search(r'Cycle_(\d+)_', col).group(1)) for col in cycle_columns})
+
+    for cycle_id in cycle_numbers:
+        plt.figure(figsize=(10, 6))
+        
+        cchg = df_VQ_grouped[f'Cycle_{cycle_id}_CapChg'].dropna()
+        cdchg = df_VQ_grouped[f'Cycle_{cycle_id}_CapDChg'].dropna()
+        
+        # Calculate SOH
+        if cchg.max() > cdchg.max():
+            max_capacity_per_cycle = cchg.max()
+        else:
+            max_capacity_per_cycle = cdchg.max()
+            
+        soh = (max_capacity_per_cycle / rated_capacity) * 100
+        
+        # Combine into a DataFrame
+        SOH_data.append({
+            'Cycle_ID': cycle_id,
+            'Maximum_Capacity': max_capacity_per_cycle,
+            'SOH': soh
+            })
     
-    soh = (max_capacity_per_cycle / rated_capacity) * 100
-    
-    SOH_data = pd.DataFrame({
-        'Cycle': cycles,
-        'Capacity': max_capacity_per_cycle,
-        'SOH': soh
-    })    
-    
-    SOH_data_combined.append(SOH_data)
+    df_SOH = pd.DataFrame(SOH_data)
+    df_SOH.to_csv(f'{result_folder}/{file_name}/df_SOH_{file_name}.csv', index=False)
+    pd.set_option('display.max_columns', None)  # Show all columns   
+    print('DataFrame df_SOH preview: ',df_SOH.head(5))
     
     plt.figure(figsize=(10,6))
-    plt.plot(cycles, soh, marker='o')
+    plt.plot(df_SOH['Cycle_ID'], df_SOH['SOH'], marker='o')
     plt.xlabel('Cycle Number')
     plt.ylabel('State of Health (%)')
+    plt.ylim((df_SOH['SOH'].min()-0.3), (df_SOH['SOH'].max()+0.3))
     plt.title(f'State of Health (SOH) Over Cycles - {file_name}')
     plt.grid(True)
-    plt.savefig(f'{result_folder}/{file_name}/SoH Plot_{file_name}.png', dpi=300)
-    plt.close()
-    
-    df_SOH = pd.concat(SOH_data_combined)
-    df_SOH.to_csv(f'{result_folder}/{file_name}/df_SOH_{file_name}.csv', index=False)
-    
-    return 
-
-def DA04_Function_SOH_Combined(combined_result_folder,rated_capacity,df_combined):
-    # SOH_data_combined = []
-    df_cycles = df_combined.groupby('Cycle ID')
-    cycles = df_cycles['Cycle ID'].unique()
-    max_capacity_per_cycle = df_cycles['Capacity'].max()
-    
-    soh = (max_capacity_per_cycle / rated_capacity) * 100
-    
-    # SOH_data = pd.DataFrame({
-    #     'Cycle': cycles,
-    #     'Capacity': max_capacity_per_cycle,
-    #     'SOH': soh
-    # })    
-    
-    # SOH_data_combined.append(SOH_data)
-    
-    plt.figure(figsize=(10,6))
-    
-    for code in ['B1T1', 'B2T1', 'B3T1', 'B4T1', 'N1T1', 'N2T1']:
+    plt.savefig(f'{result_folder}/{file_name}/SOH Plot_{file_name}.png', dpi=300)
+    plt.show()
         
-        if code == df_cycles['Battery_code']:
-            plt.plot(cycles, soh, marker='o')
-    
-    
-    plt.xlabel('Cycle Number')
-    plt.ylabel('State of Health (%)')
-    plt.title('State of Health (SOH) - Combined')
-    plt.grid(True)
-    plt.savefig(f'{combined_result_folder}/SOH Plot_Combined.png', dpi=300)
-    plt.close()
-    
-    # df_SOH = pd.concat(SOH_data_combined)
-    # df_SOH.to_csv(f'{result_folder}/{file_name}/df_SOH_{file_name}.csv', index=False)
-    
-    return    
+    return  df_SOH

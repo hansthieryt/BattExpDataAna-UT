@@ -1,20 +1,11 @@
 # -*- coding: utf-8 -*-
 """
 Code for automated data preprocessing
-Import
-Sorting data
-    - Group by cycle
-    - 1. VvsCap / CC-Ch and CV-Ch combined and separeted from CC-Dch
-    - 2. CapvsCyc incl. CE
-    - 3. dqdVvsV 
-    - 4. Curvst in CV steps
-Export
-
 
 Code Structure:
 1. Main
 2. DA00: Data Import, Dataframe creation, grouping
-    3. DA01: Plot & analysis of Voltage and Current to Time
+    3. DA01: Plot & analysis of Voltage, Current, Power to Time
 4. DA02: Plot & analysis of Voltage to Capacity (Potential Profile)
 5. DA03: Plot & analysis of Coulombic Efficiency
 6. DA04: Plot & analysis SOH over cycles
@@ -33,10 +24,10 @@ import matplotlib.cm as cm
 import numpy as np
 
 #-----------------------------------VnIvsTime----------------------------------
-
 def DA01_Function_VnIvsTime(result_folder,file_name,df_cycle_grouped):
     cycle_id = df_cycle_grouped.groups.keys()
     
+    #---------------------------------Every cycles----------------------------- 
     i = 0
     for i in cycle_id:    
         cycle_data = df_cycle_grouped.get_group(i)
@@ -58,7 +49,8 @@ def DA01_Function_VnIvsTime(result_folder,file_name,df_cycle_grouped):
 
     # Get a colormap with enough colors for all cycles
     colors = cm.rainbow(np.linspace(0, 1, len(cycle_id)))
-
+    
+    i = 0
     for i, cycle in enumerate(cycle_id):
         cycle_data = df_cycle_grouped.get_group(cycle)
         
@@ -82,47 +74,19 @@ def DA01_Function_VnIvsTime(result_folder,file_name,df_cycle_grouped):
 
     return
 
-
-def DA01_Function_VnIvsTime_Combined(combined_result_folder,df_combined):
-    # cycle_id = df_combined.groups.keys()
-    
-    fig, host = plt.subplots()
-    par1 = host.twinx()  # Create the second y-axis
-     
-    # Plot each cycle with a different color
-    p1, = host.plot(df_combined['Cycle_Time'], df_combined['Voltage'])#, label=f'Cycle {cycle} Voltage')
-    p2, = par1.plot(df_combined['Cycle_Time'], df_combined['Current'], linestyle='--')#, label=f'Cycle {cycle} Current')
-    
-    # Set labels and titles
-    host.set_xlabel('Cycle Time (s)')
-    host.set_ylabel('Voltage (V)')
-    par1.set_ylabel('Current (mA)')
-    plt.title('Voltage and Current vs. Cycle Time - Combined')
-
-    # Create a legend that combines both axes
-    host.legend(loc='upper left')
-    par1.legend(loc='upper right')
-
-    # Save the combined plot
-    plt.savefig(f"{combined_result_folder}/VnCvsTime_Combined.png", dpi=300, bbox_inches='tight')
-    plt.show()
-
-    return
-
-#-----------------------------------Power----------------------------------
-
+#------------------------------------Power-------------------------------------
 def DA01_Function_Power(result_folder,file_name,df_cycle_grouped):
     cycle_id = df_cycle_grouped.groups.keys()
     
     plt.figure(figsize=(10, 6))
     i = 0
-    for i in cycle_id:    
+    for i in cycle_id:
         cycle_data = df_cycle_grouped.get_group(i)
 
         # Insert the data for overview plot
-        plt.plot(cycle_data['Cycle_Time'], cycle_data['Voltage']*cycle_data['Current'])
-        plt.ylabel('Voltage (V)')
-        plt.ylabel('Power (kW)')
+        plt.plot(cycle_data['Cycle_Time'], cycle_data['Power'])
+        plt.ylabel('Cycle Time (s)')
+        plt.ylabel('Power (mW)')
         plt.title(f'Power vs. Time - {file_name} - Cycle{i}')
         plt.savefig(f'{result_folder}/{file_name}/PvsTime_{file_name}_Cycle{i}.png', dpi=300, bbox_inches='tight')
         plt.show()
@@ -136,11 +100,11 @@ def DA01_Function_Power(result_folder,file_name,df_cycle_grouped):
         cycle_data = df_cycle_grouped.get_group(cycle)
         
         # Plot each cycle with a different color
-        plt.plot(cycle_data['Cycle_Time'], cycle_data['Voltage']*cycle_data['Current'], color=colors[i])
+        plt.plot(cycle_data['Cycle_Time'], cycle_data['Power'], color=colors[i])
     
     # Set labels and titles
     plt.xlabel('Cycle Time (s)')
-    plt.ylabel('Power (kW)')
+    plt.ylabel('Power (mW)')
     plt.title(f'Power vs. Cycle Time - All Cycles - {file_name}')
     plt.savefig(f"{result_folder}/{file_name}/PvsTime_{file_name}_AllCycles.png", dpi=300, bbox_inches='tight')
     plt.show()
