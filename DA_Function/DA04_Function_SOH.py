@@ -33,8 +33,6 @@ def DA04_Function_SOH(df_VQ_grouped,rated_capacity,file_name,result_folder):
     cycle_numbers = sorted({int(re.search(r'Cycle_(\d+)_', col).group(1)) for col in cycle_columns})
 
     for cycle_id in cycle_numbers:
-        plt.figure(figsize=(10, 6))
-        
         cchg = df_VQ_grouped[f'Cycle_{cycle_id}_CapChg'].dropna()
         cdchg = df_VQ_grouped[f'Cycle_{cycle_id}_CapDChg'].dropna()
         
@@ -56,13 +54,14 @@ def DA04_Function_SOH(df_VQ_grouped,rated_capacity,file_name,result_folder):
     df_SOH = pd.DataFrame(SOH_data)
     df_SOH.to_csv(f'{result_folder}/{file_name}/df_SOH_{file_name}.csv', index=False)
     pd.set_option('display.max_columns', None)  # Show all columns   
-    print('DataFrame df_SOH preview: ',df_SOH.head(5))
+    print('DataFrame df_SOH preview: ')
+    print(df_SOH.head(5))
     
     plt.figure(figsize=(10,6))
     plt.plot(df_SOH['Cycle_ID'], df_SOH['SOH'], marker='o')
     plt.xlabel('Cycle Number')
     plt.ylabel('State of Health (%)')
-    plt.ylim((df_SOH['SOH'].min()-0.3), (df_SOH['SOH'].max()+0.3))
+    plt.ylim((df_SOH['SOH'].min()*0.97), (df_SOH['SOH'].max()*1.03))
     plt.title(f'State of Health (SOH) Over Cycles - {file_name}')
     plt.grid(True)
     plt.savefig(f'{result_folder}/{file_name}/SOH Plot_{file_name}.png', dpi=300)

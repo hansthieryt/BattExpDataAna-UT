@@ -32,9 +32,7 @@ def DA03_Function_Coulombic_Efficiency(df_VQ_grouped,file_name,result_folder):
     cycle_columns = [col for col in df_VQ_grouped.columns if re.match(r'Cycle_\d+_', col)]
     cycle_numbers = sorted({int(re.search(r'Cycle_(\d+)_', col).group(1)) for col in cycle_columns})
 
-    for cycle_id in cycle_numbers:
-        plt.figure(figsize=(10, 6))
-        
+    for cycle_id in cycle_numbers:      
         cchg = df_VQ_grouped[f'Cycle_{cycle_id}_CapChg'].dropna()
         cdchg = df_VQ_grouped[f'Cycle_{cycle_id}_CapDChg'].dropna()
         
@@ -57,7 +55,8 @@ def DA03_Function_Coulombic_Efficiency(df_VQ_grouped,file_name,result_folder):
     df_ce = pd.DataFrame(ce_cycle)
     df_ce.to_csv(f'{result_folder}/{file_name}/df_CE_{file_name}.csv', index=False)
     pd.set_option('display.max_columns', None)  # Show all columns   
-    print('DataFrame df_ce preview: ',df_ce.head(5))
+    print('DataFrame df_ce preview: ')
+    print(df_ce.head(5))
     
     fig, ax1 = plt.subplots(figsize=(10, 6))
 
@@ -67,7 +66,7 @@ def DA03_Function_Coulombic_Efficiency(df_VQ_grouped,file_name,result_folder):
     ax1.plot(df_ce['Cycle_ID'], df_ce['Coulombic_Efficiency'], color=color, 
              marker='o', label='Coulombic Efficiency')
     ax1.tick_params(axis='y', labelcolor=color)
-    plt.ylim((df_ce['Coulombic_Efficiency'].min()-0.3), (df_ce['Coulombic_Efficiency'].max()+0.3))
+    plt.ylim((df_ce['Coulombic_Efficiency'].min()*0.97), (df_ce['Coulombic_Efficiency'].max()*1.03))
 
     ax2 = ax1.twinx()
     ax2.set_ylabel('Capacity (mAh)', color=color)

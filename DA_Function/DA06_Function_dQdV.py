@@ -157,7 +157,8 @@ def DA06_Function_dQdV(file_name,df_VQ_grouped,show_on_plot,
     df_dqdv.to_csv(f'{result_folder}/{file_name}/df_dQdV_{file_name}.csv', index=False)
     print("dQ/dV data saved successfully to",f'{result_folder}/{file_name}/df_dQdV_{file_name}.csv')
     pd.set_option('display.max_columns', None)  # Show all columns   
-    print('DataFrame df_dqdv preview: ',df_dqdv.head(5))
+    print('DataFrame df_dqdv preview: ')
+    print(df_dqdv.head(5))
 
 #-----------------------------Plot all cycles----------------------------------       
     # Create the plot with a rainbow color map, all cycles
@@ -373,13 +374,15 @@ def DA06_Function_dQdV(file_name,df_VQ_grouped,show_on_plot,
         df_peaks.to_csv(f'{result_folder}/{file_name}/df_peaks_{file_name}.csv', index=False)
         print("Peaks data saved successfully to", f'{result_folder}/{file_name}/df_peaks_{file_name}.csv')
         pd.set_option('display.max_columns', None)  # Show all columns   
-        print('DataFrame df_peaks preview: ',df_peaks.head(5))
+        print('DataFrame df_peaks preview: ')
+        print(df_peaks.head(5))
         
         # Export fitted peaks properties data to CSV
         df_fitting = pd.DataFrame(gaussian_results, columns=['Cycle ID', 'Status', 'Peak No', 'Amplitude', 'Mean', 'Sigma', 'Area'])
         df_fitting.to_csv(f'{result_folder}/{file_name}/df_fitting_{file_name}.csv', index=False)
         print("Gaussian fitting properties saved successfully to",f'{result_folder}/{file_name}/df_fitting_{file_name}.csv')
         pd.set_option('display.max_columns', None)  # Show all columns   
-        print('DataFrame df_fitting preview: ',df_fitting.head(5))
+        print('DataFrame df_fitting preview: ')
+        print(df_fitting.head(5))
     
     return df_dqdv, df_peaks, df_fitting

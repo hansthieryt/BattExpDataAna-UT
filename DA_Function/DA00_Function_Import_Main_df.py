@@ -82,11 +82,6 @@ def DA00_Function_df_Cycle_Grouping(df_main,result_folder,file_name):
     os.makedirs(f"{result_folder}/{file_name}", exist_ok=True)  
     print(f"Folder '{result_folder}/{file_name}' created!")
     
-    # Function to add CC_Chg to CV_Chg capacity (as initial capacity)
-    def accumulate_capacity(df, start_capacity):
-        df['Accumulated_Capacity'] = df['Capacity'] + start_capacity
-        return df
-
     # Dropping unnecessary columns
     df_cycle_grouped = df_main.drop(columns=['Time','Realtime','Time_Diff'])
     
@@ -95,12 +90,20 @@ def DA00_Function_df_Cycle_Grouping(df_main,result_folder,file_name):
     cycle_id = df_cycle_grouped.groups.keys()
     print("The cycles imported from", file_name, "are:", cycle_id, "and pre-processed.")
 
-    pd.set_option('display.max_columns', None)  # Show all columns   
+    # pd.set_option('display.max_columns', None)  # Show all columns   
     print('DataFrame df_cycle_grouped preview: ')
+    pd.set_option('display.max_columns', None)  # Show all columns 
     print(df_cycle_grouped.head(5))
+    
+    # df_cycle_grouped.to_csv(f'{result_folder}/{file_name}/df_cycle_grouped_{file_name}.csv', index=False)
     
     # Initialize an empty list to store data for each cycle
     df_VQ_grouped_list = []
+    
+    # Function to add CC_Chg to CV_Chg capacity (as initial capacity)
+    def accumulate_capacity(df, start_capacity):
+        df['Accumulated_Capacity'] = df['Capacity'] + start_capacity
+        return df
 
     # Iterate over each cycle
     for cycle_id, df_cyc in df_cycle_grouped:
@@ -148,8 +151,7 @@ def DA00_Function_df_Cycle_Grouping(df_main,result_folder,file_name):
     df_VQ_grouped = pd.concat(df_VQ_grouped_list, axis=1)
     df_VQ_grouped.to_csv(f'{result_folder}/{file_name}/df_VQ_grouped_{file_name}.csv', index=False)
     
-    pd.set_option('display.max_columns', None)  # Show all columns   
     print('DataFrame df_VQ_grouped preview: ')
-    print(df_VQ_grouped.head(5))
+    print(df_VQ_grouped.head())
     
     return df_cycle_grouped,df_VQ_grouped
